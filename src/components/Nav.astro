@@ -74,18 +74,29 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
     inset: 0 0 auto 0;
     z-index: var(--z-nav);
     color: var(--c-ivory);
-    transition:
-      background var(--dur) var(--ease-out),
-      color var(--dur) var(--ease-out),
-      box-shadow var(--dur) var(--ease-out);
+    /* Space so the floating pill sits away from the very top edge. */
+    padding: clamp(1rem, 2vw, 1.6rem) clamp(1rem, 3vw, 2.5rem) 0;
+    transition: color var(--dur) var(--ease-out);
   }
+  /* The bar itself is a floating, translucent rounded "pill". */
   .nav__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    /* Full-width bar with slim gutters */
-    padding: 1.1rem var(--gutter);
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding: 0.7rem 0.9rem 0.7rem clamp(1rem, 2vw, 1.6rem);
+    border-radius: 999px;
+    background: rgba(27, 30, 31, 0.28);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border: 1px solid rgba(247, 244, 238, 0.12);
+    box-shadow: 0 10px 40px -18px rgba(0, 0, 0, 0.55);
+    transition:
+      background var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
   }
 
   .nav__brand img {
@@ -118,6 +129,17 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
     border-color: currentColor;
   }
 
+  /* Nav CTA — no outline, fully rounded (pill) hover. */
+  .nav__cta :global(.btn) {
+    --btn-border: transparent;
+    --btn-bg: rgba(247, 244, 238, 0.1);
+    border-radius: 999px;
+  }
+  .nav__cta :global(.btn:hover) {
+    --btn-bg: var(--c-ivory);
+    --btn-fg: var(--c-forest);
+  }
+
   .nav__burger {
     display: none;
     flex-direction: column;
@@ -131,18 +153,20 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
     transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast);
   }
 
-  /* Scrolled / solid state (toggled via .is-solid) */
-  .nav.is-solid {
-    background: rgba(15, 42, 36, 0.92);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 1px 0 var(--line-on-dark);
+  /* Scrolled / solid state (toggled via .is-solid) — pill gets more opaque. */
+  .nav.is-solid .nav__inner {
+    background: rgba(15, 42, 36, 0.9);
+    border-color: rgba(247, 244, 238, 0.16);
+    box-shadow: 0 14px 44px -20px rgba(0, 0, 0, 0.7);
   }
 
   /* Light theme pages (no dark hero) */
   .nav[data-theme="light"] {
     color: var(--c-charcoal);
-    background: var(--c-ivory);
-    box-shadow: 0 1px 0 var(--line);
+  }
+  .nav[data-theme="light"] .nav__inner {
+    background: rgba(247, 244, 238, 0.82);
+    border-color: var(--line);
   }
   .nav[data-theme="light"] .nav__brand img {
     filter: none;
