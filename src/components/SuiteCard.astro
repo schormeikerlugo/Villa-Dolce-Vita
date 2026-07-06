@@ -24,7 +24,7 @@ const href = `/rooms#${suite.slug}`;
 >
   <a class="suite__media hoist" href={href} aria-label={`View the ${suite.name}`}>
     <Image
-      src={suite.image}
+      src={suite.images[0]}
       alt={suite.imageAlt}
       widths={[400, 640, 900, 1200, 1600]}
       sizes={featured ? "(max-width: 900px) 92vw, 46vw" : "(max-width: 900px) 92vw, 30vw"}

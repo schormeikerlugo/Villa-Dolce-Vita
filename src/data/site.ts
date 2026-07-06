@@ -8,7 +8,7 @@ export const site = {
   tagline: "Under the Tuscan Stars",
   location: "Massa Marittima, Tuscany",
   description:
-    "A private hilltop estate fifteen minutes from Massa Marittima, Tuscany — four suites, a working animal sanctuary, wellness, and views to Elba and Corsica.",
+    "A private hilltop estate fifteen minutes from Massa Marittima, Tuscany — five suites, a working animal sanctuary, wellness, and views to Elba and Corsica.",
   url: "https://villadolcevita.eu",
 } as const;
 

@@ -7,6 +7,7 @@
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
+import FeatureBar from "../components/FeatureBar.astro";
 import SplitSection from "../components/SplitSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import SuiteCard from "../components/SuiteCard.astro";
@@ -22,20 +23,23 @@ import { photos } from "../data/media";
 import { experienceLinks } from "../data/experiences";
 import { journalTeasers } from "../data/journal";
 
-// The premium suite (highest nightly rate) leads the grid; the rest support it.
-const heroSuite = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0];
-const restSuites = suites.filter((s) => s.slug !== heroSuite.slug);
+// Metro mosaic order: signature (highest rate) suite first so it takes the
+// hero tile, then the rest by descending rate for a balanced layout.
+const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
 ---
 
 <BaseLayout>
   <!-- HERO -->
   <Hero eyebrow="Massa Marittima, Tuscany" video="laDolceVita">
-    <Fragment slot="title">Where the Hills<br />Meet <em>the Sea</em></Fragment>
+    <Fragment slot="title">Under The<br /><em>Tuscan Sun</em></Fragment>
     <Fragment slot="subtitle">A Tuscan sanctuary of beauty, soul & timeless living.</Fragment>
     <Fragment slot="actions">
       <Button href={bookingHref} variant="primary">Check Availability</Button>
     </Fragment>
   </Hero>
+
+  <!-- FEATURE BAR — six-icon amenities strip, now its own band below the hero -->
+  <FeatureBar />
 
   <!-- WELCOME -->
   <SplitSection
@@ -55,7 +59,7 @@ const restSuites = suites.filter((s) => s.slug !== heroSuite.slug);
     <p>
       After years in corporate America, Linda and Frank traded the fast-paced life for the
       rolling hills of Tuscany. What they built is a ten-hectare estate of olive groves,
-      vineyards, and open pastures, home to a handful of rescued animals and four private
+      vineyards, and open pastures, home to a handful of rescued animals and five private
       suites, perched high enough to see the sea.
     </p>
     <p>
@@ -68,32 +72,30 @@ const restSuites = suites.filter((s) => s.slug !== heroSuite.slug);
     </div>
   </SplitSection>
 
-  <!-- 15 MIN TO MASSA MARITTIMA — split banner: forest panel + wide landscape -->
-  <section class="section bg-ivory">
-    <div class="wrap">
-      <div class="townband" data-reveal>
-        <div class="townband__panel">
-          <p class="eyebrow eyebrow--gold">15 Minutes To</p>
-          <h2 class="townband__title">Massa Marittima</h2>
-          <hr class="rule" />
-          <p class="townband__body">
-            Cobbled streets, medieval charm, and a thousand-year-old cathedral — a fifteen-minute
-            drive from your terrace, with the sea on the horizon. The rare town you can visit on a
-            whim, not a whole day out.
-          </p>
-          <Button href="/experiences#day-trips" variant="secondary" onDark class="townband__cta">
-            Discover the Town
-          </Button>
-        </div>
-        <div class="townband__media hoist">
-          <Image
-            src={photos.hillTownValley}
-            alt="Massa Marittima's medieval rooftops and cathedral above the valley to the sea"
-            widths={[640, 960, 1400, 1800]}
-            sizes="(max-width: 900px) 92vw, 64vw"
-            loading="lazy"
-          />
-        </div>
+  <!-- 15 MIN TO MASSA MARITTIMA — full-bleed image with an overlaid text panel -->
+  <section class="townband" data-reveal aria-labelledby="townband-title">
+    <Image
+      class="townband__bg"
+      src={photos.massaMarittima}
+      alt="Massa Marittima's medieval cathedral and piazza"
+      widths={[768, 1100, 1440, 1920]}
+      sizes="100vw"
+      loading="lazy"
+    />
+    <div class="townband__scrim" aria-hidden="true"></div>
+    <div class="townband__inner wrap">
+      <div class="townband__panel">
+        <p class="eyebrow eyebrow--gold">15 Minutes To</p>
+        <h2 class="townband__title" id="townband-title">Massa Marittima</h2>
+        <hr class="rule" />
+        <p class="townband__body">
+          Cobbled streets, medieval charm, and a thousand-year-old cathedral — a fifteen-minute
+          drive from your terrace, with the sea on the horizon. The rare town you can visit on a
+          whim, not a whole day out.
+        </p>
+        <Button href="/experiences#day-trips" variant="secondary" onDark class="townband__cta">
+          Discover the Town
+        </Button>
       </div>
     </div>
   </section>
@@ -136,16 +138,19 @@ const restSuites = suites.filter((s) => s.slug !== heroSuite.slug);
   <section class="section bg-ivory">
     <div class="wrap">
       <div class="suites-head">
-        <SectionHeader eyebrow="The Suites" title="Four Rooms, One View" align="left">
+        <SectionHeader eyebrow="The Suites" title="Five Rooms, One View" align="left">
           <p>Sophisticated comfort and genuine charm, curated for real rest.</p>
         </SectionHeader>
         <Button href="/rooms" variant="ghost" class="suites-head__cta">Explore all suites</Button>
       </div>
-      <div class="suites-grid">
-        <SuiteCard suite={heroSuite} featured />
-        <div class="suites-grid__rest">
-          {restSuites.map((s) => <SuiteCard suite={s} compact />)}
-        </div>
+      <div class="suites-metro">
+        {
+          orderedSuites.map((s, i) => (
+            <div class:list={["suites-metro__cell", `suites-metro__cell--${i}`]}>
+              <SuiteCard suite={s} featured={i === 0} />
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -329,7 +334,7 @@ const restSuites = suites.filter((s) => s.slug !== heroSuite.slug);
     <div class="finalcta__content wrap">
       <Reveal as="p" class="eyebrow eyebrow--gold">Book direct for the best rate</Reveal>
       <Reveal as="h2" delay={0.05}>Come Sit on the Hill for a While</Reveal>
-      <Reveal delay={0.1}><p class="finalcta__sub">Four suites. One view.</p></Reveal>
+      <Reveal delay={0.1}><p class="finalcta__sub">Five suites. One view.</p></Reveal>
       <Reveal delay={0.15}>
         <Button href={bookingHref} variant="primary">Check Availability</Button>
       </Reveal>
@@ -338,54 +343,96 @@ const restSuites = suites.filter((s) => s.slug !== heroSuite.slug);
 </BaseLayout>
 
 <style>
-  /* "15 minutes to" banner: forest text panel + wide landscape image. */
+  /* Tighten the first two sections under the hero.
+     NOTE: .features is rendered by the FeatureBar component, so it doesn't
+     carry this page's scope hash — the whole selector must be :global(). */
+  :global(.features + .section) {
+    padding-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  /* Welcome split leads straight into the Massa Marittima band — no bottom gap. */
+  :global(.features + .section.split) {
+    padding-bottom: 0;
+  }
+
+  /* "15 minutes to" banner: full-bleed image (native 1280×520 ≈ 32/13)
+     with a forest scrim on the left and the text panel overlaid. */
   .townband {
-    display: grid;
-    grid-template-columns: 0.85fr 1.15fr;
-    align-items: stretch;
-    border-radius: var(--radius);
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1280 / 520;
     overflow: hidden;
-    box-shadow: var(--shadow-soft);
-    min-height: 340px;
+    display: flex;
+    align-items: center;
+    /* Sits flush against the Welcome split above and the Experience below. */
+    margin-block: 0;
+  }
+  .townband__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  /* Dark gradient anchored left so the text stays legible over the sky. */
+  .townband__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(
+      ellipse 60% 75% at 50% 50%,
+      rgba(15, 42, 36, 0.6) 0%,
+      rgba(15, 42, 36, 0.4) 45%,
+      rgba(15, 42, 36, 0.12) 75%,
+      rgba(15, 42, 36, 0) 100%
+    );
+  }
+  .townband__inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   .townband__panel {
-    background: var(--c-forest);
     color: var(--c-ivory);
+    max-width: 52ch;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: clamp(2rem, 4vw, 3.5rem);
+    align-items: center;
+    text-align: center;
   }
   .townband__title {
-    font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.8rem);
+    font-size: var(--fs-h2);
     margin-top: 0.6rem;
   }
   .townband__body {
     color: var(--text-on-dark-muted);
     font-size: 1rem;
     line-height: 1.65;
-    max-width: 40ch;
+    max-width: 46ch;
   }
   .townband__cta {
     margin-top: 1.8rem;
-    align-self: flex-start;
+    align-self: center;
   }
-  .townband__media {
-    position: relative;
-    overflow: hidden;
-  }
-  .townband__media :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  /* On narrow screens the image is too short to fit the copy; let it grow
+     taller and cover the full width behind a stronger scrim. */
   @media (max-width: 820px) {
     .townband {
-      grid-template-columns: 1fr;
+      aspect-ratio: auto;
+      min-height: 30rem;
     }
-    .townband__media {
-      order: -1;
-      aspect-ratio: 16 / 10;
+    .townband__scrim {
+      background: linear-gradient(
+        180deg,
+        rgba(15, 42, 36, 0.55) 0%,
+        rgba(15, 42, 36, 0.82) 55%,
+        rgba(15, 42, 36, 0.9) 100%
+      );
+    }
+    .townband__panel {
+      max-width: none;
     }
   }
 
@@ -422,26 +469,89 @@ const restSuites = suites.filter((s) => s.slug !== heroSuite.slug);
       transform: none;
     }
   }
-  .suites-grid {
+  /* ---- Suites: metro mosaic ----
+     4 equal columns, 2 equal rows. The signature suite (cell 0) claims a 2×2
+     hero tile on the left; the four supporting suites fill a clean 2×2 grid
+     on the right — no gaps.
+
+       [ 0 0 1 2 ]
+       [ 0 0 3 4 ]                                                        */
+  .suites-metro {
     display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: clamp(1.5rem, 2.5vw, 2.2rem);
-    align-items: stretch;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, minmax(15rem, 1fr));
+    gap: clamp(1rem, 1.8vw, 1.6rem);
   }
-  .suites-grid__rest {
-    display: grid;
-    grid-template-rows: repeat(3, 1fr);
-    gap: clamp(1.5rem, 2.5vw, 2.2rem);
+  .suites-metro__cell {
+    display: flex;
+    min-width: 0;
   }
+  .suites-metro__cell > :global(.suite) {
+    width: 100%;
+  }
+  /* Signature suite: big hero tile spanning the left half. */
+  .suites-metro__cell--0 {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+  }
+  .suites-metro__cell--1 { grid-column: 3; grid-row: 1; }
+  .suites-metro__cell--2 { grid-column: 4; grid-row: 1; }
+  .suites-metro__cell--3 { grid-column: 3; grid-row: 2; }
+  .suites-metro__cell--4 { grid-column: 4; grid-row: 2; }
+
+  /* Every card fills its tile; images grow to consume the tile height. */
+  .suites-metro__cell :global(.suite__media) {
+    aspect-ratio: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
   .center-cta {
     display: flex;
     justify-content: center;
     margin-top: var(--space-group);
   }
-  @media (max-width: 900px) {
-    .suites-grid {
+
+  /* Tablet: 2 columns; hero spans the full width on top, then a 2×2 grid. */
+  @media (max-width: 1000px) {
+    .suites-metro {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+      grid-auto-rows: 1fr;
+    }
+    .suites-metro__cell--0 {
+      grid-column: 1 / 3;
+      grid-row: auto;
+    }
+    .suites-metro__cell--1,
+    .suites-metro__cell--2,
+    .suites-metro__cell--3,
+    .suites-metro__cell--4 {
+      grid-column: auto;
+      grid-row: auto;
+    }
+    .suites-metro__cell :global(.suite__media) {
+      aspect-ratio: 4 / 5;
+      flex: 0 0 auto;
+    }
+    .suites-metro__cell--0 :global(.suite__media) {
+      aspect-ratio: 16 / 10;
+    }
+  }
+  /* Phone: single column stack. */
+  @media (max-width: 560px) {
+    .suites-metro {
       grid-template-columns: 1fr;
     }
+    .suites-metro__cell--0 {
+      grid-column: 1;
+    }
+    .suites-metro__cell :global(.suite__media),
+    .suites-metro__cell--0 :global(.suite__media) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  @media (max-width: 900px) {
     .suites-head__cta {
       margin-bottom: 1.5rem;
     }

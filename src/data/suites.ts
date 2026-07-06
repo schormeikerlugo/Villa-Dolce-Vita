@@ -1,8 +1,8 @@
 /* ==========================================================================
-   suites.ts — The four suites. Copy lifted from content.md (Rooms page).
+   suites.ts — The five suites. Copy lifted from content.md (Rooms page).
    ========================================================================== */
 
-import { photos } from "./media";
+import { suitePhotos } from "./media";
 import type { ImageMetadata } from "astro";
 
 export interface Suite {
@@ -13,7 +13,8 @@ export interface Suite {
   badge?: string;
   intro: string;
   features: string[];
-  image: ImageMetadata;
+  /** Ordered gallery of real room photos; [0] is the card/lead image. */
+  images: ImageMetadata[];
   imageAlt: string;
   /** Peak nightly rate for the "from" label (see packages.ts for full table). */
   fromNight: number;
@@ -34,8 +35,8 @@ export const suites: Suite[] = [
       "A living room with a large TV and a comfortable pull-out sofa",
       "A private outdoor patio with panoramic Tuscan countryside views",
     ],
-    image: photos.terraceTableView,
-    imageAlt: "Private terrace table overlooking the Tuscan valley",
+    images: suitePhotos.napoli,
+    imageAlt: "The Napoli Suite — a bright, two-bedroom retreat with panoramic Tuscan views",
     fromNight: 320,
   },
   {
@@ -52,8 +53,8 @@ export const suites: Suite[] = [
       "A full bathroom with marble-inspired finishes and heated flooring",
       "A private patio steps from a mini plunge pool overlooking the hills",
     ],
-    image: photos.terraceTableTall,
-    imageAlt: "Romantic terrace with flowers and hillside view",
+    images: suitePhotos.roma,
+    imageAlt: "The Roma Suite — a romantic honeymoon hideaway with a private plunge pool",
     fromNight: 360,
   },
   {
@@ -69,8 +70,8 @@ export const suites: Suite[] = [
       "A modern bathroom with heated flooring",
       "A wraparound balcony and patio over the rolling hills",
     ],
-    image: photos.hillTownValley,
-    imageAlt: "Hilltown apartment with wraparound views of the valley",
+    images: suitePhotos.capri,
+    imageAlt: "The Capri Suite — a private apartment with wraparound views of the valley",
     fromNight: 260,
   },
   {
@@ -86,9 +87,26 @@ export const suites: Suite[] = [
       "A full bathroom with marble-style finishes and heated flooring",
       "A cozy living space with a TV",
     ],
-    image: photos.montepulciano,
-    imageAlt: "Cozy Tuscan hillside town view",
+    images: suitePhotos.positano,
+    imageAlt: "The Positano Suite — a cozy, intimate Tuscan hideaway with hillside views",
     fromNight: 220,
+  },
+  {
+    slug: "milano",
+    name: "Milano Suite",
+    tagline: "Refined Elegance, Effortless Comfort",
+    sleeps: 2,
+    intro:
+      "A stylish one-bedroom suite dressed in warm, contemporary tones — an intimate base for couples who love sleek design and quiet luxury.",
+    features: [
+      "A king-size bed (190×203 cm) with premium linens",
+      "A refined sitting area with a smart TV",
+      "A modern bathroom with marble-look finishes and heated flooring",
+      "A private balcony framing the Tuscan hills",
+    ],
+    images: suitePhotos.milano,
+    imageAlt: "The Milano Suite — a refined, contemporary one-bedroom retreat",
+    fromNight: 240,
   },
 ];
 

@@ -22,6 +22,7 @@ export const rateColumns = {
 
 export const rates: RateRow[] = [
   { suite: "Positano Suite (sleeps 4)", low: "€220", shoulder: "€290", peak: "€360" },
+  { suite: "Milano Suite (sleeps 2)", low: "€240", shoulder: "€310", peak: "€390" },
   { suite: "Capri Suite (sleeps 4)", low: "€260", shoulder: "€340", peak: "€420" },
   { suite: "Napoli Suite (sleeps 6)", low: "€320", shoulder: "€410", peak: "€510" },
   {

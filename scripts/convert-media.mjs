@@ -117,11 +117,63 @@ async function copyMockups() {
   }
 }
 
+/** slugify a file/folder name into a web-safe, import-friendly token. */
+const slug = (s) =>
+  s
+    .normalize("NFKD")
+    .replace(/[^\w.\- ]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .toLowerCase();
+
+/**
+ * Per-suite room photos live in content/Images/Suites/<Suite Name>/*.
+ * Copy each into src/assets/images/suites/<suite-slug>/<n>.<ext> with
+ * normalized, stable, import-friendly names (no spaces) so media.ts can
+ * statically import them for Astro <Image>.
+ */
+async function copySuites() {
+  const src = path.join(SRC_IMAGES, "Suites");
+  const out = path.join(OUT_IMAGES, "suites");
+  if (!(await exists(src))) return;
+  await mkdir(out, { recursive: true });
+
+  const dirents = await readdir(src, { withFileTypes: true });
+  const suiteDirs = dirents.filter((d) => d.isDirectory());
+  console.log(`\n🛏  ${suiteDirs.length} suites -> src/assets/images/suites`);
+
+  for (const dir of suiteDirs) {
+    // "Napoli Suite" -> "napoli"
+    const suiteSlug = slug(dir.name.replace(/\s*suite\s*$/i, ""));
+    const suiteSrc = path.join(src, dir.name);
+    const suiteOut = path.join(out, suiteSlug);
+    await mkdir(suiteOut, { recursive: true });
+
+    const files = (await readdir(suiteSrc))
+      .filter((f) => /\.(jpe?g|png)$/i.test(f))
+      .sort((a, b) =>
+        a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }),
+      );
+
+    let i = 1;
+    for (const file of files) {
+      const ext = path.extname(file).toLowerCase();
+      const dest = path.join(suiteOut, `${suiteSlug}-${i}${ext}`);
+      if (!(await exists(dest))) {
+        await copyFile(path.join(suiteSrc, file), dest);
+        console.log(`  → suites/${suiteSlug}/${suiteSlug}-${i}${ext}`);
+      }
+      i++;
+    }
+  }
+}
+
 (async () => {
   try {
     await convertVideos();
     await copyImages();
     await copyMockups();
+    await copySuites();
     console.log("\n✅ Media pipeline complete.\n");
   } catch (err) {
     console.error("\n❌ Media pipeline failed:", err.message);

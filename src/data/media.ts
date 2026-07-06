@@ -29,9 +29,11 @@ import montepulciano from "../assets/images/AdobeStock_69197875.jpeg";
 import valdorciaMist from "../assets/images/AdobeStock_73719062.jpeg";
 import butteriFoal from "../assets/images/AdobeStock_806802471.jpeg";
 import welcomeVilla from "../assets/images/seccion2.png"; // transparent PNG (no background)
+import massaMarittima from "../assets/images/seccion3.png"; // Massa Marittima cathedral + piazza (full-bleed band)
 
 export const photos = {
   welcomeVilla,
+  massaMarittima,
   restaurantStreet,
   florenceDuomoDusk,
   hillTownValley,
@@ -95,6 +97,41 @@ export const mockups = {
   branding17: mkBranding17,
   branding19: mkBranding19,
 } satisfies Record<string, ImageMetadata>;
+
+/* ---- Per-suite room photos (src/assets/images/suites/<slug>) ----
+   Copied from content/Images/Suites by scripts/convert-media (copySuites).
+   Each suite exposes an ordered gallery; [0] is the card/lead image. */
+import capri1 from "../assets/images/suites/capri/capri-1.png";
+
+import milano1 from "../assets/images/suites/milano/milano-1.jpg";
+
+import napoli1 from "../assets/images/suites/napoli/napoli-1.png";
+import napoli2 from "../assets/images/suites/napoli/napoli-2.png";
+import napoli3 from "../assets/images/suites/napoli/napoli-3.png";
+import napoli4 from "../assets/images/suites/napoli/napoli-4.png";
+import napoli5 from "../assets/images/suites/napoli/napoli-5.png";
+import napoli6 from "../assets/images/suites/napoli/napoli-6.png";
+
+import positano1 from "../assets/images/suites/positano/positano-1.png";
+import positano2 from "../assets/images/suites/positano/positano-2.png";
+import positano3 from "../assets/images/suites/positano/positano-3.png";
+import positano4 from "../assets/images/suites/positano/positano-4.png";
+import positano5 from "../assets/images/suites/positano/positano-5.png";
+
+import roma1 from "../assets/images/suites/roma/roma-1.jpg";
+import roma2 from "../assets/images/suites/roma/roma-2.png";
+import roma3 from "../assets/images/suites/roma/roma-3.png";
+import roma4 from "../assets/images/suites/roma/roma-4.png";
+import roma5 from "../assets/images/suites/roma/roma-5.jpg";
+import roma6 from "../assets/images/suites/roma/roma-6.jpg";
+
+export const suitePhotos = {
+  capri: [capri1],
+  milano: [milano1],
+  napoli: [napoli1, napoli2, napoli3, napoli4, napoli5, napoli6],
+  positano: [positano1, positano2, positano3, positano4, positano5],
+  roma: [roma1, roma2, roma3, roma4, roma5, roma6],
+} satisfies Record<string, ImageMetadata[]>;
 
 /* ---- Web-ready videos (public/videos) — referenced by URL ---- */
 const V = "/videos";

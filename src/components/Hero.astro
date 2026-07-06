@@ -1,19 +1,17 @@
 ---
 /**
  * Hero — full-viewport cinematic opener (reference 01/02).
- * Background video + arched monogram frame + serif headline + scroll cue,
- * with the six-icon FeatureBar anchored to the bottom.
+ * Background video + arched monogram frame + serif headline + scroll cue.
+ * The six-icon FeatureBar now sits as its own strip just beneath the hero.
  */
 import BackgroundVideo from "./BackgroundVideo.astro";
-import FeatureBar from "./FeatureBar.astro";
 import type { videos } from "../data/media";
 
 interface Props {
   eyebrow?: string;
   video: keyof typeof videos;
-  showFeatures?: boolean;
 }
-const { eyebrow, video, showFeatures = true } = Astro.props;
+const { eyebrow, video } = Astro.props;
 ---
 
 <section class="hero">
@@ -32,12 +30,6 @@ const { eyebrow, video, showFeatures = true } = Astro.props;
     <span>Scroll to discover</span>
     <span class="hero__scroll-line"></span>
   </a>
-
-  {showFeatures && (
-    <div class="hero__features">
-      <FeatureBar />
-    </div>
-  )}
 </section>
 <span id="after-hero"></span>
 
@@ -55,7 +47,12 @@ const { eyebrow, video, showFeatures = true } = Astro.props;
     position: relative;
     z-index: 2;
     max-width: 1100px;
+    margin-inline: auto;
     padding-top: 6rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .hero__eyebrow {
     font-size: var(--fs-eyebrow);
@@ -93,7 +90,7 @@ const { eyebrow, video, showFeatures = true } = Astro.props;
     position: absolute;
     z-index: 2;
     left: 50%;
-    bottom: clamp(9rem, 16vh, 12rem);
+    bottom: clamp(2rem, 5vh, 3.5rem);
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
@@ -115,18 +112,9 @@ const { eyebrow, video, showFeatures = true } = Astro.props;
     50% { transform: scaleY(1); opacity: 1; }
   }
 
-  .hero__features {
-    position: absolute;
-    inset: auto 0 0 0;
-    z-index: 2;
-  }
-
   @media (max-width: 900px) {
     .hero__scroll {
       display: none;
-    }
-    .hero__features {
-      position: static;
     }
     .hero {
       min-height: auto;

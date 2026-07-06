@@ -1,6 +1,6 @@
 ---
 /**
- * Rooms — the four suites in detail.
+ * Rooms — the five suites in detail.
  * Each suite is an alternating editorial SplitSection with its feature list,
  * anchored by slug (e.g. /rooms#roma) so cards elsewhere can deep-link.
  * Content from suites.ts (lifted verbatim from content.md).
@@ -20,11 +20,11 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
 
 <BaseLayout
   title="Rooms"
-  description="Four private suites — Napoli, Roma, Capri and Positano — curated for real rest, with king- and queen-size beds, heated floors and panoramic Tuscan views."
+  description="Five private suites — Napoli, Roma, Capri, Positano and Milano — curated for real rest, with king- and queen-size beds, heated floors and panoramic Tuscan views."
 >
   <PageHero
     eyebrow="The Suites"
-    title="Four Rooms, One Unforgettable View"
+    title="Five Rooms, One Unforgettable View"
     image={photos.terraceTableView}
     imageAlt="Private terrace overlooking the Tuscan valley"
   />
@@ -46,16 +46,67 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
       >
         <div class:list={["suite-detail__inner", "wrap", { "is-reverse": i % 2 === 1 }]}>
           <div class="suite-detail__media" data-parallax-scope>
-            <div class="suite-detail__img hoist">
-              <Image
-                src={suite.image}
-                alt={suite.imageAlt}
-                widths={[560, 900, 1300, 1800]}
-                sizes="(max-width: 900px) 92vw, 56vw"
-                loading="lazy"
-                data-parallax="0.1"
-              />
-              {suite.badge && <span class="suite-detail__badge">{suite.badge}</span>}
+            <div class="suite-gallery" data-suite-gallery>
+              <div class="suite-detail__img hoist">
+                {suite.images.map((img, gi) => (
+                  <Image
+                    src={img}
+                    alt={gi === 0 ? suite.imageAlt : `${suite.name} — view ${gi + 1}`}
+                    widths={[560, 900, 1300, 1800]}
+                    sizes="(max-width: 900px) 92vw, 56vw"
+                    loading={gi === 0 ? "eager" : "lazy"}
+                    class:list={["suite-gallery__slide", { "is-active": gi === 0 }]}
+                    data-slide={gi}
+                  />
+                ))}
+                {suite.badge && <span class="suite-detail__badge">{suite.badge}</span>}
+                {suite.images.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      class="suite-gallery__nav suite-gallery__nav--prev"
+                      data-prev
+                      aria-label={`Previous photo of the ${suite.name}`}
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      class="suite-gallery__nav suite-gallery__nav--next"
+                      data-next
+                      aria-label={`Next photo of the ${suite.name}`}
+                    >
+                      ›
+                    </button>
+                    <span class="suite-gallery__count" data-count>
+                      1 / {suite.images.length}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {suite.images.length > 1 && (
+                <div class="suite-gallery__thumbs" role="tablist" aria-label={`${suite.name} photos`}>
+                  {suite.images.map((img, gi) => (
+                    <button
+                      type="button"
+                      class:list={["suite-gallery__thumb", { "is-active": gi === 0 }]}
+                      data-thumb={gi}
+                      role="tab"
+                      aria-selected={gi === 0 ? "true" : "false"}
+                      aria-label={`Show photo ${gi + 1} of the ${suite.name}`}
+                    >
+                      <Image
+                        src={img}
+                        alt=""
+                        widths={[120, 200]}
+                        sizes="120px"
+                        loading="lazy"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -152,11 +203,111 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
       aspect-ratio: 4 / 5;
     }
   }
-  .suite-detail__img :global(img) {
+
+  /* ---- Gallery ---- */
+  .suite-gallery__slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity var(--dur-med, 0.5s) var(--ease-out, ease);
+    pointer-events: none;
+  }
+  .suite-gallery__slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* First slide stays visible before hydration / with JS off. */
+  .suite-detail__img :global(img.suite-gallery__slide:first-of-type) {
+    opacity: 1;
+  }
+
+  .suite-gallery__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.75rem;
+    height: 2.75rem;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--c-forest, #1e3a2f);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--dur-fast, 0.25s), background var(--dur-fast, 0.25s);
+    z-index: 2;
+    backdrop-filter: blur(2px);
+  }
+  .suite-gallery__nav--prev { left: 0.8rem; }
+  .suite-gallery__nav--next { right: 0.8rem; }
+  .suite-detail__img:hover .suite-gallery__nav,
+  .suite-gallery__nav:focus-visible {
+    opacity: 1;
+  }
+  .suite-gallery__nav:hover {
+    background: #fff;
+  }
+
+  .suite-gallery__count {
+    position: absolute;
+    bottom: 0.9rem;
+    right: 0.9rem;
+    z-index: 2;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: rgba(20, 20, 20, 0.55);
+    color: #fff;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+
+  .suite-gallery__thumbs {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding-bottom: 0.2rem;
+  }
+  .suite-gallery__thumb {
+    flex: 0 0 auto;
+    width: 4.5rem;
+    aspect-ratio: 4 / 3;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    background: none;
+    opacity: 0.6;
+    transition: opacity var(--dur-fast, 0.25s), border-color var(--dur-fast, 0.25s);
+  }
+  .suite-gallery__thumb :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+  .suite-gallery__thumb:hover {
+    opacity: 0.85;
+  }
+  .suite-gallery__thumb.is-active {
+    opacity: 1;
+    border-color: var(--accent-deep, #b08d57);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .suite-gallery__slide {
+      transition: none;
+    }
+  }
+
+  .in-suite__inner {
   .suite-detail__badge {
     position: absolute;
     top: 1rem;
@@ -245,3 +396,45 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
     }
   }
 </style>
+
+<script>
+  // Per-suite photo gallery: thumbnails + prev/next arrows crossfade slides.
+  // Runs on load and after Astro view transitions (astro:page-load).
+  function initSuiteGalleries() {
+    const galleries = document.querySelectorAll<HTMLElement>("[data-suite-gallery]");
+    galleries.forEach((gallery) => {
+      if (gallery.dataset.galleryReady === "1") return;
+      gallery.dataset.galleryReady = "1";
+
+      const slides = Array.from(
+        gallery.querySelectorAll<HTMLImageElement>(".suite-gallery__slide"),
+      );
+      const thumbs = Array.from(
+        gallery.querySelectorAll<HTMLButtonElement>("[data-thumb]"),
+      );
+      const count = gallery.querySelector<HTMLElement>("[data-count]");
+      const prev = gallery.querySelector<HTMLButtonElement>("[data-prev]");
+      const next = gallery.querySelector<HTMLButtonElement>("[data-next]");
+      if (slides.length < 2) return;
+
+      let current = 0;
+      const show = (i: number) => {
+        current = (i + slides.length) % slides.length;
+        slides.forEach((s, si) => s.classList.toggle("is-active", si === current));
+        thumbs.forEach((t, ti) => {
+          const on = ti === current;
+          t.classList.toggle("is-active", on);
+          t.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        if (count) count.textContent = `${current + 1} / ${slides.length}`;
+      };
+
+      thumbs.forEach((t, ti) => t.addEventListener("click", () => show(ti)));
+      prev?.addEventListener("click", () => show(current - 1));
+      next?.addEventListener("click", () => show(current + 1));
+    });
+  }
+
+  document.addEventListener("astro:page-load", initSuiteGalleries);
+  initSuiteGalleries();
+</script>
