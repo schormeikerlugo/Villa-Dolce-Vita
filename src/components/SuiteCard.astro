@@ -1,0 +1,193 @@
+---
+/**
+ * SuiteCard — compact suite preview used in the homepage suites grid and the
+ * Experiences/Rooms teasers. Detailed layout on the Rooms page uses SplitSection.
+ */
+import { Image } from "astro:assets";
+import type { Suite } from "../data/suites";
+import { bookingHref } from "../data/site";
+
+interface Props {
+  suite: Suite;
+  /** Large hero card: bigger image, intro text (homepage lead). */
+  featured?: boolean;
+  /** Horizontal compact row: small image + minimal copy (supporting list). */
+  compact?: boolean;
+}
+const { suite, featured = false, compact = false } = Astro.props;
+const href = `/rooms#${suite.slug}`;
+---
+
+<article
+  class:list={["suite card", { "suite--featured": featured, "suite--compact": compact }]}
+  data-reveal
+>
+  <a class="suite__media hoist" href={href} aria-label={`View the ${suite.name}`}>
+    <Image
+      src={suite.image}
+      alt={suite.imageAlt}
+      widths={[400, 640, 900, 1200, 1600]}
+      sizes={featured ? "(max-width: 900px) 92vw, 46vw" : "(max-width: 900px) 92vw, 30vw"}
+      loading="lazy"
+    />
+    {suite.badge && <span class="suite__badge">{suite.badge}</span>}
+  </a>
+  <div class="suite__body">
+    <p class="suite__sleeps">Sleeps {suite.sleeps}</p>
+    <h3 class="suite__name"><a href={href}>{suite.name}</a></h3>
+    <p class="suite__tagline">{suite.tagline}</p>
+    {featured && <p class="suite__intro">{suite.intro}</p>}
+    <p class="suite__from">
+      from <strong>€{suite.fromNight}</strong> <span>/ night</span>
+    </p>
+    <div class="suite__actions">
+      <a class="suite__link" href={href}>View suite →</a>
+      {featured && <a class="suite__book" href={bookingHref}>Book</a>}
+    </div>
+  </div>
+</article>
+
+<style>
+  /* Base look comes from the shared .card + .hoist utilities. */
+  .suite__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+  }
+  .suite__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .suite__badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--accent);
+    color: var(--c-forest);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.7rem;
+    border-radius: var(--radius-sm);
+  }
+  .suite__body {
+    padding: 1.5rem 1.6rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+  }
+  .suite__sleeps {
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .suite__name {
+    font-size: 1.5rem;
+  }
+  .suite__tagline {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+  .suite__from {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .suite__from strong {
+    color: var(--text);
+    font-size: 1.05rem;
+  }
+  .suite__actions {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .suite__link {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .suite__link:hover {
+    color: var(--text);
+  }
+  .suite__book {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--c-charcoal);
+    border-radius: var(--radius-sm);
+    transition: background var(--dur-fast), color var(--dur-fast);
+  }
+  .suite__book:hover {
+    background: var(--c-charcoal);
+    color: var(--c-ivory);
+  }
+  .suite__intro {
+    color: var(--text-muted);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    margin-top: 0.6rem;
+  }
+
+  /* ---- Featured (large lead card) ---- */
+  .suite--featured .suite__media {
+    aspect-ratio: 4 / 5;
+  }
+  .suite--featured .suite__body {
+    padding: clamp(1.8rem, 3vw, 2.6rem);
+    gap: 0.5rem;
+  }
+  .suite--featured .suite__name {
+    font-size: clamp(1.9rem, 1.4rem + 1.4vw, 2.6rem);
+  }
+  .suite--featured .suite__tagline {
+    font-size: 1rem;
+  }
+
+  /* ---- Compact (horizontal supporting row) ---- */
+  .suite--compact {
+    flex-direction: row;
+  }
+  .suite--compact .suite__media {
+    aspect-ratio: 1 / 1;
+    flex: 0 0 42%;
+  }
+  .suite--compact .suite__body {
+    padding: clamp(1.1rem, 2vw, 1.5rem);
+    gap: 0.25rem;
+    justify-content: center;
+  }
+  .suite--compact .suite__name {
+    font-size: 1.25rem;
+  }
+  .suite--compact .suite__tagline {
+    font-size: 0.85rem;
+    /* keep the row tight — one line of support copy */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .suite--compact .suite__from {
+    margin-top: 0.4rem;
+    font-size: 0.82rem;
+  }
+  .suite--compact .suite__actions {
+    padding-top: 0.7rem;
+  }
+  @media (max-width: 520px) {
+    .suite--compact {
+      flex-direction: column;
+    }
+    .suite--compact .suite__media {
+      flex-basis: auto;
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

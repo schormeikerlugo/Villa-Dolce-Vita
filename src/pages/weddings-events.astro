@@ -1,0 +1,183 @@
+---
+/**
+ * Weddings & Events — hilltop ceremonies for 50–100 guests.
+ * Copy lifted verbatim from content.md (Weddings & Events page).
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SplitSection from "../components/SplitSection.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import Button from "../components/Button.astro";
+import Reveal from "../components/Reveal.astro";
+import { photos } from "../data/media";
+
+const receptionPoints = [
+  "Dinner with a view, available on request in a secluded area of the estate",
+  "White-glove wine service, including a selection from France dating to the 1960s–1990s",
+  "Long tables under market lights, spilling from the terrace into the vineyard rows",
+  "A menu built from our own kitchen — the parmigiano-wheel spaghetti makes a memorable showpiece course",
+];
+
+const planning = [
+  "Late spring through early autumn gives the best odds of a clear, warm evening for the sunset ceremony",
+  "Ceremony and reception capacity are confirmed separately, as they may differ",
+  "A rain contingency plan is agreed before booking",
+  "Parking and shuttle logistics for guests arriving from Pisa (≈1.5 h) or Florence (≈2 h) are arranged in advance",
+];
+---
+
+<BaseLayout
+  title="Weddings & Events"
+  description="A marble terrace on top of a hill, sunsets behind Elba and Corsica, and a menu from our own kitchen. Villa Dolce Vita was built for weddings of fifty to a hundred guests."
+>
+  <PageHero
+    eyebrow="Weddings & Events"
+    title="A Marble Terrace on Top of a Hill"
+    image={photos.hillsPinkDawn}
+    imageAlt="Hilltop wedding terrace at dawn, sea on the horizon"
+  />
+
+  <!-- INTRO -->
+  <section class="section bg-ivory">
+    <div class="wrap wrap--narrow" style="text-align:center">
+      <Reveal as="p" class="eyebrow">Makes Your Stay Unforgettable</Reveal>
+      <Reveal as="p" delay={0.05} class="lead">
+        Fifty to a hundred guests is a genuinely smart size to build a wedding around: big enough
+        for a real celebration, with a dance floor and a full guest list, small enough that it
+        never feels like an event venue. Villa Dolce Vita was built for weddings this size, not
+        scaled down to fit them.
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- THE SETTING -->
+  <SplitSection
+    eyebrow="The Setting"
+    title="Where the Sky Does Most of the Work"
+    image={photos.terraceTableView}
+    imageAlt="The marble ceremony terrace overlooking vineyards and the sea"
+    arch
+  >
+    <p>
+      Ceremonies take place on the hilltop terrace, looking out over vineyards, olive groves, and
+      the sea, with Isola d'Elba and, on the clearest days, Corsica, visible on the horizon.
+    </p>
+    <p>
+      Timed right, the cocktail hour rolls straight into sunset, with the sky over the water
+      behind the islands doing most of the work for you.
+    </p>
+  </SplitSection>
+
+  <!-- CEREMONY & RECEPTION -->
+  <section class="section bg-dark">
+    <div class="wrap wed-reception">
+      <div class="wed-reception__copy">
+        <Reveal as="p" class="eyebrow eyebrow--gold">Ceremony & Reception</Reveal>
+        <Reveal as="h2" delay={0.05}>From the Terrace, Into the Vines</Reveal>
+        <Reveal delay={0.1}><hr class="rule" /></Reveal>
+        <Reveal delay={0.12}>
+          <p style="color:var(--text-on-dark-muted)">
+            The reception can spill from the terrace into the vineyard rows: long tables under
+            market lights, a menu built from our own kitchen, and wine poured from our own list
+            right through dinner.
+          </p>
+        </Reveal>
+      </div>
+      <Reveal as="ul" class="wed-list" delay={0.14}>
+        {receptionPoints.map((p) => <li>{p}</li>)}
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- PLANNING DETAILS -->
+  <section class="section split--stone">
+    <div class="wrap">
+      <SectionHeader eyebrow="Planning Details" title="The Things Worth Settling Early" align="left" />
+      <ol class="planning">
+        {planning.map((p, i) => (
+          <li data-reveal>
+            <span class="planning__num">{String(i + 1).padStart(2, "0")}</span>
+            <span>{p}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section bg-ivory">
+    <div class="wrap wrap--narrow" style="text-align:center">
+      <SectionHeader eyebrow="Start the Conversation" title="Picture Your Own Setup" align="center">
+        <p>Tell us the date and the headcount — we'll build the rest around your day.</p>
+      </SectionHeader>
+      <Reveal delay={0.15}>
+        <Button href="/contact" variant="primary">Enquire About Your Date</Button>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 0.9rem + 1.2vw, 1.8rem);
+    line-height: 1.5;
+    color: var(--c-forest);
+  }
+  .wed-reception {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .wed-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .wed-list li {
+    position: relative;
+    padding-left: 1.8rem;
+    color: var(--c-ivory);
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line-on-dark);
+  }
+  .wed-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--accent);
+    transform: rotate(45deg);
+  }
+  .planning {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 3rem;
+  }
+  .planning li {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+  .planning__num {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--accent-deep);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  @media (max-width: 900px) {
+    .wed-reception,
+    .planning {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

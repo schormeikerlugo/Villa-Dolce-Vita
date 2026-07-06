@@ -1,0 +1,149 @@
+---
+/**
+ * Contact — direct contact channels, the alcohol disclaimer, and the note
+ * about the sanctuary animals. All copy from content.md / site.ts.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import Button from "../components/Button.astro";
+import Reveal from "../components/Reveal.astro";
+import { photos } from "../data/media";
+import { contact, notices, bookingHref } from "../data/site";
+
+const channels = [
+  {
+    label: "WhatsApp",
+    value: contact.whatsapp,
+    href: contact.whatsappHref,
+    note: "Fastest reply — our concierge is on hand throughout the day.",
+  },
+  {
+    label: "Email",
+    value: contact.email,
+    href: `mailto:${contact.email}`,
+    note: "For enquiries, quotes, and anything that needs detail.",
+  },
+  {
+    label: "Address",
+    value: contact.address,
+    href: "https://maps.google.com/?q=Podere+Seccatoi+56+Massa+Marittima",
+    note: "Fifteen minutes from Massa Marittima, Tuscany.",
+  },
+  {
+    label: "Instagram",
+    value: contact.instagramHandle,
+    href: contact.instagram,
+    note: "Daily life at the estate — animals included.",
+  },
+];
+---
+
+<BaseLayout
+  title="Contact Us"
+  description="Get in touch by WhatsApp, email or Instagram. Villa Dolce Vita, Podere Seccatoi, Massa Marittima, Tuscany."
+>
+  <PageHero
+    eyebrow="Contact Us"
+    title="Don't Hesitate to Get in Touch"
+    image={photos.hillsPinkDawn}
+    imageAlt="The estate hills at dawn"
+  />
+
+  <!-- CHANNELS -->
+  <section class="section bg-ivory">
+    <div class="wrap">
+      <SectionHeader eyebrow="Get in Touch" title="However You'd Like to Reach Us" align="center">
+        <p>Two people actually live here — you'll be talking to us, not a call centre.</p>
+      </SectionHeader>
+      <div class="channels">
+        {
+          channels.map((c) => (
+            <a class:list={["channel", "card", { "channel--primary": c.label === "WhatsApp" }]} href={c.href} target="_blank" rel="noopener" data-reveal>
+              <span class="channel__label">{c.label}</span>
+              <span class="channel__value">{c.value}</span>
+              <span class="channel__note">{c.note}</span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="center-cta">
+        <Button href={bookingHref} variant="primary">Check Availability</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTICES -->
+  <section class="section split--stone">
+    <div class="wrap notices">
+      <article class="notice" data-reveal>
+        <p class="eyebrow">Alcohol Disclaimer</p>
+        <p class="notice__body">{notices.alcohol}</p>
+      </article>
+      <article class="notice" data-reveal>
+        <p class="eyebrow">A Note for Our Guests</p>
+        <p class="notice__body">{notices.animals}</p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .channels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(1.5rem, 2.5vw, 2.2rem);
+  }
+  /* Base look (border, radius, background, hover lift) comes from .card */
+  .channel {
+    gap: 0.4rem;
+    padding: 2rem 2.2rem;
+  }
+  /* Subtle emphasis for the fastest channel (WhatsApp) */
+  .channel--primary {
+    border-color: var(--accent);
+  }
+  .channel__label {
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .channel__value {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--c-forest);
+  }
+  .channel__note {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .center-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
+  .notices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  .notice {
+    border-left: 2px solid var(--accent-deep);
+    padding-left: 1.6rem;
+  }
+  .notice__body {
+    color: var(--c-charcoal);
+    opacity: 0.85;
+    margin-top: 0.8rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 800px) {
+    .channels,
+    .notices {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+/**
+ * BaseLayout — wraps every page.
+ * - Loads global styles + fonts.
+ * - Renders Nav + Footer.
+ * - Boots the shared scroll experience (Lenis + GSAP) once per page.
+ */
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/site";
+import { ClientRouter, fade } from "astro:transitions";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Dark nav (default) sits over hero media; light nav for inner pages w/o hero. */
+  navTheme?: "dark" | "light";
+}
+
+const {
+  title,
+  description = site.description,
+  navTheme = "dark",
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en" />
+
+    <!-- Smooth cross-page fade (no flash between nav sections). -->
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav theme={navTheme} transition:persist="site-nav" />
+    <main id="main" transition:animate={fade({ duration: "0.45s" })}>
+      <slot />
+    </main>
+    <Footer />
+
+    {/* Tell the persistent nav what theme each page needs. */}
+    <meta name="nav-theme" content={navTheme} data-nav-theme />
+
+
+    <script>
+      import { initScroll } from "../lib/scroll";
+      // Run on first load AND after every View Transition navigation.
+      document.addEventListener("astro:page-load", () => initScroll());
+      // Start each new page at the top (Lenis shouldn't inherit scroll).
+      document.addEventListener("astro:after-swap", () => window.scrollTo(0, 0));
+    </script>
+  </body>
+</html>

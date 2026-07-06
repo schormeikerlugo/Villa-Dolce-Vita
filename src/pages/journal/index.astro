@@ -1,0 +1,140 @@
+---
+/**
+ * Journal index — a running local guide.
+ * Cards link to /journal/[slug]. Content from journal.ts (content.md).
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import Reveal from "../../components/Reveal.astro";
+import { Image } from "astro:assets";
+import { photos } from "../../data/media";
+import { journal, journalIntro } from "../../data/journal";
+---
+
+<BaseLayout
+  title="Journal"
+  description="A running local guide, not a press release: things to do nearby, restaurant spotlights, and life at the estate."
+>
+  <PageHero
+    eyebrow="From the Journal"
+    title="A Running Local Guide"
+    image={photos.hillTownValley}
+    imageAlt="Medieval hilltown near the estate"
+  />
+
+  <section class="section bg-ivory">
+    <div class="wrap wrap--narrow" style="text-align:center">
+      <Reveal as="p" delay={0.05} class="lead">{journalIntro}</Reveal>
+    </div>
+  </section>
+
+  <section class="section bg-ivory">
+    <div class="wrap">
+      <div class="jlist">
+        {
+          journal.map((a, i) => (
+            <a
+              class:list={["jpost card", { "jpost--lead": i === 0 }]}
+              href={`/journal/${a.slug}`}
+              data-reveal
+            >
+              <div class="jpost__media hoist">
+                <Image
+                  src={a.image}
+                  alt={a.imageAlt}
+                  widths={[480, 768, 1100, 1600]}
+                  sizes={i === 0 ? "100vw" : "(max-width: 900px) 92vw, 45vw"}
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+              </div>
+              <div class="jpost__body">
+                <span class="jpost__cat">{a.category}</span>
+                <h2 class="jpost__title">{a.title}</h2>
+                <p class="jpost__excerpt">{a.excerpt}</p>
+                <span class="jpost__more">Read the story →</span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 0.9rem + 1.2vw, 1.8rem);
+    line-height: 1.5;
+    color: var(--c-forest);
+  }
+  .jlist {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+  /* Base look (border, radius, background, hover lift) comes from .card;
+     image zoom on hover comes from .hoist. */
+  .jpost--lead {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+  }
+  .jpost__media {
+    aspect-ratio: 16 / 10;
+  }
+  .jpost--lead .jpost__media {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 340px;
+  }
+  .jpost__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .jpost__body {
+    padding: 1.8rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .jpost__cat {
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .jpost__title {
+    font-size: clamp(1.4rem, 1rem + 1vw, 2rem);
+    transition: color var(--dur-fast);
+  }
+  .jpost:hover .jpost__title {
+    color: var(--accent-deep);
+  }
+  .jpost__excerpt {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .jpost__more {
+    margin-top: 0.6rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  @media (max-width: 900px) {
+    .jlist {
+      grid-template-columns: 1fr;
+    }
+    .jpost--lead {
+      grid-template-columns: 1fr;
+    }
+    .jpost--lead .jpost__media {
+      min-height: 0;
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

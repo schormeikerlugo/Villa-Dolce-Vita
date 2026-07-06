@@ -1,0 +1,18 @@
+---
+/**
+ * Reveal — thin wrapper that opts an element into the global scroll-reveal
+ * (fade + rise) handled by lib/scroll.ts. Keeps pages declarative.
+ *
+ * Usage: <Reveal delay={0.1} as="h2">Heading</Reveal>
+ */
+interface Props {
+  as?: string;
+  delay?: number;
+  class?: string;
+}
+const { as: Tag = "div", delay = 0, class: className = "" } = Astro.props;
+---
+
+<Tag data-reveal data-reveal-delay={delay} class={className}>
+  <slot />
+</Tag>

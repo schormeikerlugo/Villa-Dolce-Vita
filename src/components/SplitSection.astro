@@ -1,0 +1,135 @@
+---
+/**
+ * SplitSection — editorial two-column block: media on one side, copy on the
+ * other (reference 04's "A Timeless Escape"). The workhorse layout across the
+ * site. Media can be a plain image or the arched frame.
+ *
+ * Slots: default = body copy; "media" optional custom media.
+ */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import ArchImage from "./ArchImage.astro";
+import Reveal from "./Reveal.astro";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  reverse?: boolean;
+  arch?: boolean;
+  theme?: "ivory" | "dark" | "stone";
+  parallax?: number | false;
+}
+const {
+  eyebrow,
+  title,
+  image,
+  imageAlt = "",
+  reverse = false,
+  arch = false,
+  theme = "ivory",
+  parallax = 0.12,
+} = Astro.props;
+
+const bgClass = theme === "dark" ? "bg-dark" : theme === "stone" ? "split--stone" : "bg-ivory";
+---
+
+<section class:list={["section", "split", bgClass, { "split--reverse": reverse }]}>
+  <div class="split__inner wrap">
+    <div class="split__media" data-parallax-scope>
+      {
+        image &&
+          (arch ? (
+            <ArchImage src={image} alt={imageAlt} parallax={parallax} />
+          ) : (
+            <div class="split__img hoist">
+              <Image
+                src={image}
+                alt={imageAlt}
+                widths={[560, 900, 1300, 1800]}
+                sizes="(max-width: 900px) 92vw, 56vw"
+                loading="lazy"
+              />
+            </div>
+          ))
+      }
+      <slot name="media" />
+    </div>
+
+    <div class="split__copy">
+      {eyebrow && <Reveal as="p" class="eyebrow">{eyebrow}</Reveal>}
+      <Reveal as="h2" delay={0.05}>{title}</Reveal>
+      <Reveal delay={0.1}><hr class="rule" /></Reveal>
+      <Reveal delay={0.15} class="split__body">
+        <slot />
+      </Reveal>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split--stone {
+    background: var(--c-stone);
+    color: var(--c-charcoal);
+  }
+  .split__inner {
+    display: grid;
+    /* Image leads: ~57% media, ~43% copy. */
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2.5rem, 6vw, 6.5rem);
+    align-items: center;
+  }
+  .split--reverse .split__media {
+    order: 2;
+  }
+
+  .split__img {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    /* Taller, more cinematic than the old 4/5 */
+    aspect-ratio: 5 / 6;
+    box-shadow: var(--shadow-soft);
+  }
+  @media (min-width: 1100px) {
+    .split__img {
+      aspect-ratio: 4 / 5;
+    }
+  }
+  .split__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .split__copy :global(h2) {
+    margin-top: 0.5rem;
+  }
+  .split__body {
+    font-size: 1.05rem;
+  }
+  .split__body :global(p) {
+    color: var(--text-muted);
+    margin-bottom: 1.1rem;
+  }
+  .bg-dark .split__body :global(p) {
+    color: var(--text-on-dark-muted);
+  }
+  .split__body :global(.actions) {
+    margin-top: 1.6rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 900px) {
+    .split__inner {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .split--reverse .split__media {
+      order: 0;
+    }
+  }
+</style>

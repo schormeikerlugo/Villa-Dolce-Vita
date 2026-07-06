@@ -1,0 +1,48 @@
+---
+/**
+ * SectionHeader — centered eyebrow + heading + optional intro, with the gold
+ * rule. Used to introduce list/grid sections.
+ */
+import Reveal from "./Reveal.astro";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  align?: "center" | "left";
+  onDark?: boolean;
+  class?: string;
+}
+const { eyebrow, title, align = "center", class: className = "" } = Astro.props;
+---
+
+<header class:list={["sechead", `sechead--${align}`, className]}>
+  {eyebrow && <Reveal as="p" class="eyebrow">{eyebrow}</Reveal>}
+  <Reveal as="h2" delay={0.05}>{title}</Reveal>
+  <Reveal delay={0.1}><hr class="rule" /></Reveal>
+  <slot />
+</header>
+
+<style>
+  .sechead {
+    max-width: 54ch;
+    margin-bottom: var(--space-group);
+  }
+  .sechead--left {
+    max-width: 46ch;
+  }
+  .sechead--center {
+    max-width: 56ch;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .sechead--center .rule {
+    margin-inline: auto;
+  }
+  .sechead :global(p:not(.eyebrow)) {
+    color: var(--text-muted);
+    margin-inline: auto;
+  }
+  .sechead--center :global(p) {
+    margin-inline: auto;
+  }
+</style>

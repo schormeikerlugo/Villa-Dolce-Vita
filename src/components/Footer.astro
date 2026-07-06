@@ -1,0 +1,161 @@
+---
+/**
+ * Footer — contact, sitemap columns, brand line, and the two recurring
+ * legal notices (alcohol + animal sanctuary) required on every page.
+ */
+import { contact, nav, notices, site } from "../data/site";
+
+const services = nav.filter((n) =>
+  ["/rooms", "/experiences", "/weddings-events", "/dining"].includes(n.href),
+);
+const quick = nav.filter((n) =>
+  ["/about-us", "/packages", "/journal", "/shop", "/contact"].includes(n.href),
+);
+const suites = ["Napoli Suite", "Roma Suite", "Capri Suite", "Positano Suite"];
+const year = new Date().getFullYear();
+---
+
+<footer class="footer bg-dark">
+  <div class="footer__top wrap">
+    <div class="footer__brand">
+      <img src="/logo.svg" alt={site.name} width="200" height="60" />
+      <p class="footer__tag">{site.tagline}</p>
+      <address class="footer__contact">
+        <a href={contact.whatsappHref}>WhatsApp: {contact.whatsapp}</a>
+        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        <a href={contact.instagram}>{contact.instagramHandle}</a>
+        <span>{contact.address}</span>
+      </address>
+    </div>
+
+    <nav class="footer__col" aria-label="Experiences">
+      <h3>Experiences</h3>
+      <ul>
+        {services.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav class="footer__col" aria-label="Explore">
+      <h3>Explore</h3>
+      <ul>
+        {quick.map((q) => <li><a href={q.href}>{q.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="footer__col">
+      <h3>Our Suites</h3>
+      <ul>
+        {suites.map((s) => <li><a href="/rooms">{s}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__notices wrap">
+    <p><strong>Disclaimer:</strong> {notices.alcohol}</p>
+    <p><strong>A Note for Our Guests:</strong> {notices.animals}</p>
+  </div>
+
+  <div class="footer__bottom wrap">
+    <p>© {year} {site.name}. All rights reserved.</p>
+    <p>Massa Marittima, Tuscany · Italy</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-top: clamp(3.5rem, 7vw, 6rem);
+  }
+  .footer__top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding-bottom: 3.5rem;
+    border-bottom: 1px solid var(--line-on-dark);
+  }
+  .footer__brand img {
+    height: 56px;
+    width: auto;
+    filter: brightness(0) invert(1);
+  }
+  .footer__tag {
+    margin-top: 0.75rem;
+    font-size: var(--fs-small);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .footer__contact {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-style: normal;
+    font-size: 0.9rem;
+    color: var(--text-on-dark-muted);
+  }
+  .footer__contact a:hover {
+    color: var(--accent);
+  }
+
+  .footer__col h3 {
+    font-family: var(--font-body);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    font-weight: 500;
+  }
+  .footer__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .footer__col a {
+    font-size: 0.9rem;
+    color: var(--text-on-dark-muted);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .footer__col a:hover {
+    color: var(--c-ivory);
+  }
+
+  .footer__notices {
+    padding-block: 2rem;
+    display: grid;
+    gap: 0.9rem;
+    border-bottom: 1px solid var(--line-on-dark);
+  }
+  .footer__notices p {
+    max-width: 100%;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: rgba(201, 196, 184, 0.75);
+  }
+  .footer__notices strong {
+    color: var(--text-on-dark-muted);
+    font-weight: 500;
+  }
+
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-block: 1.75rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: rgba(201, 196, 184, 0.7);
+  }
+
+  @media (max-width: 900px) {
+    .footer__top {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .footer__top {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

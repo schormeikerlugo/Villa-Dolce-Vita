@@ -1,0 +1,249 @@
+---
+/**
+ * Nav — fixed top navigation.
+ * - Transparent over hero media; gains a solid backdrop once scrolled.
+ * - `theme="light"` for pages without a dark hero.
+ * - Full 10-item menu on desktop; slide-in panel on mobile.
+ */
+import { nav, bookingHref, site } from "../data/site";
+import Button from "./Button.astro";
+
+interface Props {
+  theme?: "dark" | "light";
+  [key: string]: unknown;
+}
+const { theme = "dark", ...rest } = Astro.props;
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<header class="nav" data-theme={theme} id="site-nav" {...rest}>
+  <div class="nav__inner">
+    <a class="nav__brand" href="/" aria-label={`${site.name} — home`}>
+      <img src="/logo.svg" alt={site.name} width="150" height="45" />
+    </a>
+
+    <nav class="nav__menu" aria-label="Primary">
+      <ul>
+        {
+          nav.map((item) => {
+            const href = item.href.replace(/\/$/, "") || "/";
+            const active = href === current;
+            return (
+              <li>
+                <a href={item.href} class:list={["nav__link", { active }]}>
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <div class="nav__cta">
+      <Button href={bookingHref} variant="secondary" onDark>Check Availability</Button>
+    </div>
+
+    <button class="nav__burger" aria-label="Open menu" aria-expanded="false" id="nav-burger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile panel -->
+  <div class="nav__panel" id="nav-panel">
+    <ul>
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} class="nav__panel-link">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <Button href={bookingHref} variant="primary" class="nav__panel-cta">
+      Check Availability
+    </Button>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-nav);
+    color: var(--c-ivory);
+    transition:
+      background var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    /* Full-width bar with slim gutters */
+    padding: 1.1rem var(--gutter);
+  }
+
+  .nav__brand img {
+    height: 44px;
+    width: auto;
+    /* Logo art is dark; invert to ivory while over hero. */
+    filter: brightness(0) invert(1);
+    transition: filter var(--dur) var(--ease-out);
+  }
+
+  .nav__menu ul {
+    display: flex;
+    gap: clamp(0.9rem, 1.4vw, 1.8rem);
+  }
+  .nav__link {
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    padding-bottom: 3px;
+    border-bottom: 1px solid transparent;
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+    white-space: nowrap;
+  }
+  .nav__link:hover,
+  .nav__link.active {
+    opacity: 1;
+    border-color: currentColor;
+  }
+
+  .nav__burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0.5rem;
+  }
+  .nav__burger span {
+    width: 24px;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast);
+  }
+
+  /* Scrolled / solid state (toggled via .is-solid) */
+  .nav.is-solid {
+    background: rgba(15, 42, 36, 0.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 0 var(--line-on-dark);
+  }
+
+  /* Light theme pages (no dark hero) */
+  .nav[data-theme="light"] {
+    color: var(--c-charcoal);
+    background: var(--c-ivory);
+    box-shadow: 0 1px 0 var(--line);
+  }
+  .nav[data-theme="light"] .nav__brand img {
+    filter: none;
+  }
+
+  /* Mobile panel — hidden by default, revealed via .is-open */
+  .nav__panel {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-nav) + 1);
+    background: var(--c-forest);
+    color: var(--c-ivory);
+    /* Hidden state */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 5rem var(--gutter) 3rem;
+  }
+  .nav__panel.is-open {
+    display: flex;
+  }
+  .nav__panel ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: center;
+  }
+  .nav__panel-link {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+  }
+  .nav__panel-cta {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 1080px) {
+    .nav__menu,
+    .nav__cta {
+      display: none;
+    }
+    .nav__burger {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  // The nav persists across View Transitions (transition:persist), so bind its
+  // listeners only once, and refresh per-page state on every navigation.
+  function setupNav() {
+    const navEl = document.getElementById("site-nav");
+    const burger = document.getElementById("nav-burger");
+    const panel = document.getElementById("nav-panel");
+    if (!navEl || !burger || !panel) return;
+
+    if (!navEl.dataset.bound) {
+      navEl.dataset.bound = "true";
+
+      // Solidify the nav once scrolled past the hero.
+      const onScroll = () => {
+        navEl.classList.toggle("is-solid", window.scrollY > window.innerHeight * 0.7);
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      // Mobile panel toggle.
+      let open = false;
+      const toggle = (state: boolean) => {
+        open = state;
+        panel.classList.toggle("is-open", open);
+        burger.setAttribute("aria-expanded", String(open));
+        document.body.style.overflow = open ? "hidden" : "";
+      };
+      burger.addEventListener("click", () => toggle(!open));
+      panel
+        .querySelectorAll("a")
+        .forEach((a) => a.addEventListener("click", () => toggle(false)));
+    }
+
+    // --- Per-page refresh (runs on first load and after each navigation) ---
+    // 1) Theme: read the page's requested nav theme from the swapped-in meta.
+    const themeMeta = document.querySelector<HTMLMetaElement>("[data-nav-theme]");
+    if (themeMeta) navEl.setAttribute("data-theme", themeMeta.content);
+
+    // 2) Active link: highlight the entry matching the current path.
+    const current = location.pathname.replace(/\/$/, "") || "/";
+    navEl.querySelectorAll<HTMLAnchorElement>(".nav__link").forEach((a) => {
+      const href = new URL(a.href).pathname.replace(/\/$/, "") || "/";
+      a.classList.toggle("active", href === current);
+    });
+
+    // 3) Reset the solid state for the new page's scroll position.
+    navEl.classList.toggle("is-solid", window.scrollY > window.innerHeight * 0.7);
+
+    // 4) Close the mobile panel if it was open during navigation.
+    panel.classList.remove("is-open");
+    burger.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  }
+
+  document.addEventListener("astro:page-load", setupNav);
+</script>

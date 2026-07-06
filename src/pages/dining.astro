@@ -1,0 +1,412 @@
+---
+/**
+ * Dining — the menu, private dinner pricing, welcome baskets and the cellar.
+ * All copy/data from dining.ts (content.md, Dining page).
+ * Note: the alcohol notice in the Footer applies to any bottle purchase.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import Button from "../components/Button.astro";
+import Reveal from "../components/Reveal.astro";
+import { Image } from "astro:assets";
+import { photos, mockups } from "../data/media";
+import { bookingHref } from "../data/site";
+import {
+  diningIntro,
+  dinner,
+  baskets,
+  wineIntro,
+  wineList,
+} from "../data/dining";
+---
+
+<BaseLayout
+  title="Dining"
+  description="A 38-month aged parmigiano wheel, private dinners for four or more, welcome baskets, and a cellar spanning three countries and five decades."
+>
+  <PageHero
+    eyebrow="Dining"
+    title="Spaghetti Tossed in a Flaming Wheel of Parmigiano"
+    image={photos.terraceTableTall}
+    imageAlt="Private terrace dinner set for the evening"
+  />
+
+  <!-- SIGNATURE -->
+  <section class="section bg-ivory dining-intro">
+    <div class="wrap dining-intro__inner">
+      <div class="dining-intro__copy">
+        <Reveal as="p" class="eyebrow">The Signature</Reveal>
+        <Reveal as="h2" delay={0.05}>A Table Worth Sitting Down For</Reveal>
+        <Reveal delay={0.1}><hr class="rule" /></Reveal>
+        <Reveal delay={0.12}><p class="lead">{diningIntro}</p></Reveal>
+      </div>
+      <Reveal as="div" class="dining-intro__media hoist" delay={0.1}>
+        <Image
+          src={mockups.menuReserved}
+          alt="Villa Dolce Vita menu and reserved card on the dinner table"
+          widths={[480, 768, 1100]}
+          sizes="(max-width: 900px) 92vw, 44vw"
+          loading="lazy"
+        />
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- PRIVATE DINNER MENU -->
+  <section class="section split--stone">
+    <div class="wrap">
+      <SectionHeader eyebrow="Private Dinners" title="The Menu">
+        <p>{dinner.note}</p>
+      </SectionHeader>
+
+      <div class="menu">
+        <div class="menu__course" data-reveal>
+          <h3>Off the BBQ</h3>
+          <ul>{dinner.mains.map((m) => <li>{m}</li>)}</ul>
+        </div>
+        <div class="menu__course" data-reveal>
+          <h3>Pasta & Table</h3>
+          <ul>{dinner.pasta.map((m) => <li>{m}</li>)}</ul>
+        </div>
+        <div class="menu__course" data-reveal>
+          <h3>Dolce</h3>
+          <ul><li>{dinner.dessert}</li></ul>
+        </div>
+      </div>
+
+      <div class="menu__prices" data-reveal>
+        {dinner.prices.map((p) => (
+          <div class="price-chip">
+            <span class="price-chip__label">{p.label}</span>
+            <span class="price-chip__price">{p.price}</span>
+          </div>
+        ))}
+      </div>
+      <p class="fineprint">{dinner.wineNote}</p>
+    </div>
+  </section>
+
+  <!-- WELCOME BASKETS -->
+  <section class="section bg-ivory">
+    <div class="wrap">
+      <SectionHeader eyebrow="Welcome Baskets" title="Something Waiting on Arrival" align="center">
+        <p>Hand-packed with Tuscan flavours, ready in your suite or to take home.</p>
+      </SectionHeader>
+      <div class="baskets">
+        {
+          baskets.map((b) => (
+            <article class:list={["basket", { "basket--featured": b.featured }]} data-reveal>
+              {b.featured && <span class="basket__badge">Italian Excellence</span>}
+              <div class="basket__media hoist">
+                <Image
+                  src={mockups.wineGift}
+                  alt={`${b.name} — ${b.subtitle}`}
+                  widths={[400, 640, 900]}
+                  sizes="(max-width: 900px) 92vw, 44vw"
+                  loading="lazy"
+                />
+              </div>
+              <div class="basket__body">
+                <p class="basket__sub">{b.subtitle}</p>
+                <h3 class="basket__name">{b.name}</h3>
+                <p class="basket__price">{b.price}</p>
+                <ul class="basket__items">
+                  {b.items.map((it) => <li>{it}</li>)}
+                </ul>
+                <Button href="/contact" variant="ghost">Enquire to order</Button>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- THE CELLAR / WINE LIST -->
+  <section class="section bg-dark cellar">
+    <div class="cellar__bg">
+      <Image
+        src={photos.wineCellar}
+        alt="The estate wine cellar"
+        widths={[768, 1280, 1920]}
+        sizes="100vw"
+        loading="lazy"
+      />
+      <div class="cellar__scrim" aria-hidden="true"></div>
+    </div>
+    <div class="wrap cellar__content">
+      <SectionHeader eyebrow="The Cellar" title="Three Countries, Five Decades" align="center" onDark>
+        <p style="color:var(--text-on-dark-muted)">{wineIntro}</p>
+      </SectionHeader>
+
+      <div class="wine-list">
+        {
+          wineList.map((group) => (
+            <div class="wine-group" data-reveal>
+              <h3 class="wine-group__cat">{group.category}</h3>
+              {group.origins.map((o) => (
+                <div class="wine-origin">
+                  <p class="wine-origin__name">{o.origin}</p>
+                  <ul>{o.wines.map((w) => <li>{w}</li>)}</ul>
+                </div>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section bg-ivory">
+    <div class="wrap wrap--narrow" style="text-align:center">
+      <SectionHeader eyebrow="Reserve a Table" title="Dinner, With a View" align="center">
+        <p>Private dinners are pre-booked for a minimum of four. Tell us when.</p>
+      </SectionHeader>
+      <Reveal delay={0.15}>
+        <Button href={bookingHref} variant="primary">Enquire About Dinner</Button>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 0.9rem + 1vw, 1.6rem);
+    line-height: 1.5;
+    color: var(--c-forest);
+  }
+  .dining-intro__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .dining-intro__media {
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    aspect-ratio: 4 / 5;
+  }
+  .dining-intro__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Menu */
+  .menu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .menu__course {
+    border-top: 2px solid var(--accent-deep);
+    padding-top: 1.2rem;
+  }
+  .menu__course h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  .menu__course ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .menu__course li {
+    color: var(--c-charcoal);
+    opacity: 0.85;
+    font-size: 0.95rem;
+  }
+  .menu__prices {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 2.5rem;
+  }
+  .price-chip {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    border: 1px solid var(--c-charcoal);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1.4rem;
+  }
+  .price-chip__label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+  }
+  .price-chip__price {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+  }
+  .fineprint {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-top: 1.5rem;
+  }
+
+  /* Baskets */
+  .baskets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  .basket {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    background: var(--c-ivory);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .basket--featured {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-card);
+  }
+  .basket__badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+    background: var(--accent);
+    color: var(--c-forest);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--radius-sm);
+  }
+  .basket__media {
+    overflow: hidden;
+  }
+  .basket__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .basket__body {
+    padding: 1.6rem 1.8rem;
+  }
+  .basket__sub {
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .basket__name {
+    font-size: 1.5rem;
+    margin: 0.3rem 0;
+  }
+  .basket__price {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--c-forest);
+    margin-bottom: 1rem;
+  }
+  .basket__items {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.4rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .basket__items li {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    padding-left: 1rem;
+    position: relative;
+  }
+  .basket__items li::before {
+    content: "·";
+    position: absolute;
+    left: 0.2rem;
+    color: var(--accent-deep);
+  }
+
+  /* Cellar */
+  .cellar {
+    position: relative;
+    overflow: hidden;
+  }
+  .cellar__bg {
+    position: absolute;
+    inset: 0;
+  }
+  .cellar__bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cellar__scrim {
+    position: absolute;
+    inset: 0;
+    /* Let the cellar photo breathe while keeping the wine list legible. */
+    background: linear-gradient(
+      to right,
+      rgba(15, 42, 36, 0.92) 0%,
+      rgba(15, 42, 36, 0.78) 55%,
+      rgba(15, 42, 36, 0.55) 100%
+    );
+  }
+  .cellar__content {
+    position: relative;
+    z-index: 2;
+  }
+  .wine-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem 3rem;
+  }
+  .wine-group__cat {
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--line-on-dark);
+  }
+  .wine-origin {
+    margin-bottom: 1.2rem;
+  }
+  .wine-origin__name {
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--text-on-dark-muted);
+    margin-bottom: 0.5rem;
+  }
+  .wine-origin ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .wine-origin li {
+    color: var(--c-ivory);
+    font-size: 0.92rem;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 900px) {
+    .dining-intro__inner,
+    .menu,
+    .baskets,
+    .wine-list {
+      grid-template-columns: 1fr;
+    }
+    .basket {
+      grid-template-columns: 1fr;
+    }
+    .basket__media {
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

@@ -1,0 +1,163 @@
+---
+/**
+ * About Us — the estate's story, vision and mission.
+ * Copy lifted verbatim from content.md (About Us page).
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SplitSection from "../components/SplitSection.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import Button from "../components/Button.astro";
+import Reveal from "../components/Reveal.astro";
+import { Image } from "astro:assets";
+import { bookingHref } from "../data/site";
+import { photos, mockups } from "../data/media";
+---
+
+<BaseLayout
+  title="About Us"
+  description="After years in corporate America, Linda and Frank traded the fast-paced life for the rolling hills of Tuscany — a ten-hectare estate of olive groves, vineyards and rescued animals."
+>
+  <PageHero
+    eyebrow="Our Story"
+    title="A Life Traded for the Tuscan Hills"
+    image={photos.valdorciaMist}
+    imageAlt="Mist drifting over the Val d'Orcia hills at dawn"
+  />
+
+  <!-- OUR STORY -->
+  <SplitSection
+    eyebrow="Our Story"
+    title="Somewhere Between a Hotel and a Home"
+    image={photos.hillsPinkDawn}
+    imageAlt="Estate hills at first light, sea on the horizon"
+    arch
+    reverse
+  >
+    <p>
+      After years in corporate America, we traded the fast-paced life for the rolling hills of
+      Tuscany to create something truly special. Nestled across forty acres of olive groves,
+      vineyards, and open pastures, our estate offers an escape into nature, beauty,
+      tranquility, and timeless charm.
+    </p>
+    <p>
+      Our land is home to a handful of rescued animals who roam peacefully across the grounds,
+      but our vision extends beyond that. We've built a serene and luxurious retreat designed to
+      host unforgettable events, whether it's a wedding, an anniversary, a birthday celebration,
+      or an intimate dinner under the stars.
+    </p>
+    <p>
+      Perched high above the Tuscan landscape, our property features multiple stunning spaces,
+      each with panoramic views that set the stage for something memorable. With a dedicated team
+      and personalized service, we make sure every experience feels as considered as the setting
+      itself.
+    </p>
+  </SplitSection>
+
+  <!-- INVITATION -->
+  <section class="section bg-charcoal invite">
+    <div class="wrap wrap--narrow" style="text-align:center">
+      <SectionHeader
+        eyebrow="Be Part of Our Journey"
+        title="To Celebrate, to Connect, to Experience"
+        align="center"
+        onDark
+      >
+        <p style="color:var(--text-on-dark-muted)">
+          We invite you to experience the beauty of Tuscany in a way that's truly unforgettable.
+        </p>
+      </SectionHeader>
+      <Reveal delay={0.15}>
+        <Button href={bookingHref} variant="secondary" onDark>Check Availability</Button>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- VISION & MISSION -->
+  <section class="section bg-ivory">
+    <div class="wrap creed">
+      <Reveal as="figure" class="creed__card">
+        <p class="eyebrow">Our Vision</p>
+        <blockquote>
+          To create a private Tuscan sanctuary where refined comfort, nature, and wellness come
+          together. A place to slow down, reconnect, and experience effortless luxury in its most
+          authentic form.
+        </blockquote>
+      </Reveal>
+      <Reveal as="figure" class="creed__card" delay={0.08}>
+        <p class="eyebrow">Our Mission</p>
+        <blockquote>
+          Our mission is to create a sanctuary where every guest feels restored, inspired, and
+          embraced by the true essence of the Dolce Vita.
+        </blockquote>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- THE WELCOME (branding detail) -->
+  <SplitSection
+    eyebrow="Arriving"
+    title="A Welcome That Feels Personal"
+    theme="stone"
+  >
+    <p>
+      From the handwritten welcome note waiting in your suite to the honey, olives, and citrus
+      picked from the farm, every detail is arranged by two people who actually live here. A
+      WhatsApp concierge is on hand throughout your stay, and an optional butler service is
+      available for those who'd like to be looked after completely.
+    </p>
+    <div class="actions">
+      <Button href="/rooms" variant="ghost">See the suites</Button>
+      <Button href="/experiences" variant="ghost">Explore experiences</Button>
+    </div>
+    <div slot="media" class="welcome-media">
+      <Image
+        src={mockups.welcomeLetter}
+        alt="Villa Dolce Vita welcome letter and room key"
+        widths={[480, 768, 1100]}
+        sizes="(max-width: 900px) 92vw, 48vw"
+        loading="lazy"
+      />
+    </div>
+  </SplitSection>
+</BaseLayout>
+
+<style>
+  .creed {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+  .creed__card {
+    background: var(--c-ivory);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(2rem, 4vw, 3.2rem);
+    box-shadow: var(--shadow-soft);
+  }
+  .creed__card blockquote {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1rem + 1.4vw, 2rem);
+    line-height: 1.35;
+    font-style: italic;
+    color: var(--c-forest);
+  }
+  .welcome-media {
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    aspect-ratio: 4 / 5;
+  }
+  .welcome-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 800px) {
+    .creed {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

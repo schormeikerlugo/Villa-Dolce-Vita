@@ -1,0 +1,83 @@
+/* ==========================================================================
+   Villa Dolce Vita — Design Tokens
+   Source of truth: brand style guide (content/referencia/03.png)
+   Every color / type / spacing value used across the site is defined here.
+   ========================================================================== */
+
+:root {
+  /* --- Brand colors (exact hex from the style guide) --- */
+  --c-forest: #0f2a24; /* deep green — primary dark surface */
+  --c-charcoal: #1b1e1f; /* near-black — text on light, dark surfaces */
+  --c-ivory: #f7f4ee; /* warm ivory — primary light surface */
+  --c-stone: #b7b2a7; /* moonlit stone — muted borders / captions */
+  --c-bronze: #a8845a; /* muted bronze — secondary accent */
+  --c-gold: #d2b48c; /* tuscan gold — primary accent / CTAs */
+
+  /* --- Semantic roles --- */
+  --bg: var(--c-ivory);
+  --bg-dark: var(--c-forest);
+  --bg-charcoal: var(--c-charcoal);
+  --text: var(--c-charcoal);
+  --text-muted: #5c5a54;
+  --text-on-dark: var(--c-ivory);
+  --text-on-dark-muted: #c9c4b8;
+  --accent: var(--c-gold);
+  --accent-deep: var(--c-bronze);
+  --line: rgba(27, 30, 31, 0.14);
+  --line-on-dark: rgba(247, 244, 238, 0.18);
+
+  /* --- Typography --- */
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Fluid type scale (min .. max via viewport). Names match the guide. */
+  --fs-h1: clamp(2.75rem, 1.6rem + 5.2vw, 5.5rem);
+  --fs-h2: clamp(2rem, 1.3rem + 3vw, 3.5rem);
+  --fs-h3: clamp(1.35rem, 1.05rem + 1.3vw, 1.9rem);
+  --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+  --fs-small: 0.78rem;
+  --fs-eyebrow: 0.72rem;
+
+  --lh-tight: 1.08;
+  --lh-snug: 1.28;
+  --lh-body: 1.7;
+
+  --tracking-eyebrow: 0.28em;
+  --tracking-caps: 0.14em;
+
+  /* --- Layout (FULL-WIDTH first: sections span 100vw, small side gutters) --- */
+  --gutter: clamp(1.6rem, 4.5vw, 4rem); /* side gutters — edge-to-edge feel */
+  --content-max: 1680px; /* wide editorial max for inner text blocks */
+  --measure: 62ch; /* readable paragraph width */
+
+  /* Editorial vertical rhythm — generous, premium (>=112px on desktop). */
+  --section-y: clamp(5rem, 8vw, 8.5rem); /* between sections */
+  --space-group: clamp(2.5rem, 4vw, 4rem); /* between related blocks */
+  --space-element: clamp(1rem, 1.5vw, 1.5rem); /* between elements */
+
+  /* --- Radii, borders, shadows --- */
+  /* Editorial language: near-straight corners; the arch is the only real curve. */
+  --radius-sm: 3px;
+  --radius: 4px;
+  --radius-arch: 50% 50% 0 0 / 34% 34% 0 0; /* the arched-frame motif */
+
+  /* Elevation: soft, low, warm — never a colored "pop". */
+  --shadow-soft: 0 18px 50px -34px rgba(15, 42, 36, 0.5);
+  --shadow-card: 0 24px 60px -44px rgba(27, 30, 31, 0.55);
+
+  /* Card surface: a hair warmer than the page so cards read on ivory. */
+  --surface: #fffdf9;
+  --surface-sunk: #f2eee5;
+
+  /* --- Motion --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 0.35s;
+  --dur: 0.6s;
+  --dur-slow: 1s;
+
+  /* --- Z-index scale --- */
+  --z-nav: 100;
+  --z-overlay: 200;
+  --z-cursor: 300;
+}

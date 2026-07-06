@@ -1,0 +1,117 @@
+---
+/**
+ * Journal article — static route generated per slug from journal.ts.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import Button from "../../components/Button.astro";
+import Reveal from "../../components/Reveal.astro";
+import { journal } from "../../data/journal";
+
+export function getStaticPaths() {
+  return journal.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+
+// Related: the other articles.
+const related = journal.filter((a) => a.slug !== article.slug);
+---
+
+<BaseLayout title={article.title} description={article.excerpt}>
+  <PageHero eyebrow={article.category} title={article.title} image={article.image} imageAlt={article.imageAlt} />
+
+  <article class="section bg-ivory">
+    <div class="wrap wrap--narrow prose">
+      <Reveal as="p" class="prose__lead">{article.excerpt}</Reveal>
+      <hr class="rule" />
+      {article.body.map((p, i) => (
+        <Reveal as="p" delay={Math.min(i * 0.03, 0.15)}>{p}</Reveal>
+      ))}
+
+      <div class="prose__foot">
+        <Button href="/journal" variant="ghost">Back to the Journal</Button>
+      </div>
+    </div>
+  </article>
+
+  <!-- RELATED -->
+  <section class="section split--stone">
+    <div class="wrap">
+      <p class="eyebrow" style="margin-bottom:2rem">Keep Reading</p>
+      <div class="related">
+        {
+          related.map((a) => (
+            <a class="rcard card" href={`/journal/${a.slug}`} data-reveal>
+              <span class="rcard__cat">{a.category}</span>
+              <h3 class="rcard__title">{a.title}</h3>
+              <span class="rcard__more">Read →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose {
+    max-width: 68ch;
+  }
+  .prose__lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 1rem + 1.2vw, 1.9rem);
+    line-height: 1.45;
+    color: var(--c-forest);
+    font-style: italic;
+  }
+  .prose :global(p:not(.prose__lead)) {
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: var(--c-charcoal);
+    margin-bottom: 1.4rem;
+  }
+  .prose__foot {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .related {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.8rem;
+  }
+  /* Base look (border, radius, background, hover lift) comes from .card.
+     No image in related cards — keep padding generous so they read as
+     intentional editorial cards. */
+  .rcard {
+    gap: 0.6rem;
+    padding: 2rem 1.9rem;
+  }
+  .rcard__cat {
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .rcard__title {
+    font-size: 1.3rem;
+  }
+  .rcard__more {
+    margin-top: auto;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  @media (max-width: 700px) {
+    .related {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
