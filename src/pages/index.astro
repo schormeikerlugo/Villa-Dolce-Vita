@@ -100,6 +100,27 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     </div>
   </section>
 
+  <!-- THE SUITES — asymmetric: the premium suite leads, the rest support it. -->
+  <section class="section bg-ivory">
+    <div class="wrap">
+      <div class="suites-head">
+        <SectionHeader eyebrow="The Suites" title="Five Rooms, One View" align="left">
+          <p>Sophisticated comfort and genuine charm, curated for real rest.</p>
+        </SectionHeader>
+        <Button href="/rooms" variant="ghost" class="suites-head__cta">Explore all suites</Button>
+      </div>
+      <div class="suites-metro">
+        {
+          orderedSuites.map((s, i) => (
+            <div class:list={["suites-metro__cell", `suites-metro__cell--${i}`]}>
+              <SuiteCard suite={s} featured={i === 0} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- THE EXPERIENCE — pinned crossfade over a night-sky video -->
   <section class="experience" data-pin-fade>
     <BackgroundVideo video="nightSky" overlay={false} />
@@ -130,27 +151,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
         <div class="experience__actions">
           <Button href="/experiences" variant="secondary" onDark>Explore Experiences</Button>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- THE SUITES — asymmetric: the premium suite leads, the rest support it. -->
-  <section class="section bg-ivory">
-    <div class="wrap">
-      <div class="suites-head">
-        <SectionHeader eyebrow="The Suites" title="Five Rooms, One View" align="left">
-          <p>Sophisticated comfort and genuine charm, curated for real rest.</p>
-        </SectionHeader>
-        <Button href="/rooms" variant="ghost" class="suites-head__cta">Explore all suites</Button>
-      </div>
-      <div class="suites-metro">
-        {
-          orderedSuites.map((s, i) => (
-            <div class:list={["suites-metro__cell", `suites-metro__cell--${i}`]}>
-              <SuiteCard suite={s} featured={i === 0} />
-            </div>
-          ))
-        }
       </div>
     </div>
   </section>
