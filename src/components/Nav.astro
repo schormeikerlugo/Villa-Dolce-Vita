@@ -88,11 +88,11 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
     margin-inline: auto;
     padding: 0.7rem 0.9rem 0.7rem clamp(1rem, 2vw, 1.6rem);
     border-radius: 999px;
-    background: rgba(27, 30, 31, 0.28);
+    background: rgba(38, 36, 31, 0.26);
     backdrop-filter: blur(14px) saturate(120%);
     -webkit-backdrop-filter: blur(14px) saturate(120%);
-    border: 1px solid rgba(247, 244, 238, 0.12);
-    box-shadow: 0 10px 40px -18px rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(243, 238, 230, 0.14);
+    box-shadow: 0 10px 40px -18px rgba(0, 0, 0, 0.5);
     transition:
       background var(--dur) var(--ease-out),
       border-color var(--dur) var(--ease-out),
@@ -132,12 +132,12 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
   /* Nav CTA — no outline, fully rounded (pill) hover. */
   .nav__cta :global(.btn) {
     --btn-border: transparent;
-    --btn-bg: rgba(247, 244, 238, 0.1);
+    --btn-bg: rgba(243, 238, 230, 0.1);
     border-radius: 999px;
   }
   .nav__cta :global(.btn:hover) {
-    --btn-bg: var(--c-ivory);
-    --btn-fg: var(--c-forest);
+    --btn-bg: var(--accent);
+    --btn-fg: var(--c-cypress);
   }
 
   .nav__burger {
@@ -155,9 +155,9 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 
   /* Scrolled / solid state (toggled via .is-solid) — pill gets more opaque. */
   .nav.is-solid .nav__inner {
-    background: rgba(15, 42, 36, 0.9);
-    border-color: rgba(247, 244, 238, 0.16);
-    box-shadow: 0 14px 44px -20px rgba(0, 0, 0, 0.7);
+    background: rgba(47, 63, 53, 0.92);
+    border-color: rgba(243, 238, 230, 0.16);
+    box-shadow: 0 14px 44px -20px rgba(0, 0, 0, 0.65);
   }
 
   /* Light theme pages (no dark hero) */
@@ -165,7 +165,7 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
     color: var(--c-charcoal);
   }
   .nav[data-theme="light"] .nav__inner {
-    background: rgba(247, 244, 238, 0.82);
+    background: rgba(243, 238, 230, 0.85);
     border-color: var(--line);
   }
   .nav[data-theme="light"] .nav__brand img {

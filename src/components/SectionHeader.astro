@@ -16,7 +16,7 @@ const { eyebrow, title, align = "center", class: className = "" } = Astro.props;
 ---
 
 <header class:list={["sechead", `sechead--${align}`, className]}>
-  {eyebrow && <Reveal as="p" class="eyebrow">{eyebrow}</Reveal>}
+  {eyebrow && <Reveal as="p" class="eyebrow eyebrow--diamond">{eyebrow}</Reveal>}
   <Reveal as="h2" delay={0.05}>{title}</Reveal>
   <Reveal delay={0.1}><hr class="rule" /></Reveal>
   <slot />
@@ -37,6 +37,10 @@ const { eyebrow, title, align = "center", class: className = "" } = Astro.props;
   }
   .sechead--center .rule {
     margin-inline: auto;
+  }
+  /* Center the diamond-eyebrow inline-flex within centered headers. */
+  .sechead--center :global(.eyebrow--diamond) {
+    justify-content: center;
   }
   .sechead :global(p:not(.eyebrow)) {
     color: var(--text-muted);

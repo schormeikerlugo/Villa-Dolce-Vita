@@ -7,11 +7,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import SplitSection from "../components/SplitSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
+import StatBand from "../components/StatBand.astro";
+import QuoteBand from "../components/QuoteBand.astro";
 import Button from "../components/Button.astro";
 import Reveal from "../components/Reveal.astro";
 import { Image } from "astro:assets";
 import { bookingHref } from "../data/site";
 import { photos, mockups } from "../data/media";
+
+const estateStats = [
+  { value: "40", label: "Acres of land" },
+  { value: "10", label: "Hectares of estate" },
+  { value: "5", label: "Private suites" },
+  { value: "1", label: "View of the sea" },
+];
 ---
 
 <BaseLayout
@@ -24,6 +33,18 @@ import { photos, mockups } from "../data/media";
     image={photos.valdorciaMist}
     imageAlt="Mist drifting over the Val d'Orcia hills at dawn"
   />
+
+  <!-- INTRO LEAD — large editorial statement to set the tone -->
+  <section class="section bg-ivory intro">
+    <div class="wrap wrap--narrow">
+      <Reveal as="p" class="eyebrow eyebrow--gold intro__eyebrow">Benvenuti</Reveal>
+      <Reveal as="p" class="intro__lead" delay={0.05}>
+        Not quite a hotel. Not quite a farmhouse. Somewhere in between — a place
+        run by two people who actually live here, for guests who want the real
+        version of a Tuscan escape rather than the postcard.
+      </Reveal>
+    </div>
+  </section>
 
   <!-- OUR STORY -->
   <SplitSection
@@ -54,6 +75,114 @@ import { photos, mockups } from "../data/media";
     </p>
   </SplitSection>
 
+  <!-- BY THE NUMBERS -->
+  <StatBand
+    eyebrow="The Estate in Numbers"
+    title="Forty Acres of Slow Living"
+    stats={estateStats}
+    theme="dark"
+  />
+
+  <!-- CINEMATIC QUOTE BAND -->
+  <QuoteBand
+    image={photos.cypressRoad}
+    imageAlt="A winding cypress-lined road through the Tuscan hills"
+    quote="We didn't build a resort. We opened our home."
+    cite="Linda & Frank, founders"
+  />
+
+  <!-- MEET THE FOUNDERS -->
+  <SplitSection
+    eyebrow="The People Behind It"
+    title="Meet Linda & Frank"
+    theme="stone"
+  >
+    <p>
+      We left corporate America not to run a business, but to build a life — and then to share it.
+      Every olive pressed, every animal rescued, and every guest welcomed is part of the same
+      story: a quieter, more intentional way of living that we couldn't keep to ourselves.
+    </p>
+    <p>
+      You'll find us on the grounds most days — pouring the morning coffee, tending the groves, or
+      simply pointing out where the light falls best at dusk. This isn't a place we manage from
+      afar. It's home.
+    </p>
+    <div class="actions">
+      <Button href="/rooms" variant="ghost">See the suites</Button>
+      <Button href="/experiences" variant="ghost">Explore experiences</Button>
+    </div>
+    <div slot="media" class="founders-media">
+      <Image
+        src={photos.terraceTableTall}
+        alt="A table set for two on the estate terrace at golden hour"
+        widths={[480, 768, 1100]}
+        sizes="(max-width: 900px) 92vw, 48vw"
+        loading="lazy"
+      />
+    </div>
+  </SplitSection>
+
+  <!-- VISION & MISSION — one forest, one ivory for contrast -->
+  <section class="section bg-ivory">
+    <div class="wrap">
+      <div class="creed">
+        <Reveal as="figure" class="creed__card creed__card--dark">
+          <p class="eyebrow eyebrow--gold">Our Vision</p>
+          <blockquote>
+            To create a private Tuscan sanctuary where refined comfort, nature, and wellness come
+            together. A place to slow down, reconnect, and experience effortless luxury in its most
+            authentic form.
+          </blockquote>
+        </Reveal>
+        <Reveal as="figure" class="creed__card" delay={0.08}>
+          <p class="eyebrow">Our Mission</p>
+          <blockquote>
+            Our mission is to create a sanctuary where every guest feels restored, inspired, and
+            embraced by the true essence of the Dolce Vita.
+          </blockquote>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE WELCOME (branding detail) -->
+  <SplitSection
+    eyebrow="Arriving"
+    title="A Welcome That Feels Personal"
+    theme="ivory"
+    reverse
+  >
+    <p>
+      From the handwritten welcome note waiting in your suite to the honey, olives, and citrus
+      picked from the farm, every detail is arranged by two people who actually live here. A
+      WhatsApp concierge is on hand throughout your stay, and an optional butler service is
+      available for those who'd like to be looked after completely.
+    </p>
+    <div class="welcome-list">
+      <div class="welcome-list__item">
+        <span class="welcome-list__label">In your suite</span>
+        A handwritten note and produce from the farm
+      </div>
+      <div class="welcome-list__item">
+        <span class="welcome-list__label">Throughout your stay</span>
+        A WhatsApp concierge, on hand whenever you need
+      </div>
+      <div class="welcome-list__item">
+        <span class="welcome-list__label">On request</span>
+        Optional butler service, to be looked after completely
+      </div>
+    </div>
+    <div slot="media" class="welcome-media">
+      <Image
+        src={mockups.welcomeLetter}
+        alt="Villa Dolce Vita welcome letter and room key"
+        widths={[480, 768, 1100]}
+        sizes="(max-width: 900px) 92vw, 48vw"
+        loading="lazy"
+      />
+    </div>
+  </SplitSection>
+
   <!-- INVITATION -->
   <section class="section bg-charcoal invite">
     <div class="wrap wrap--narrow" style="text-align:center">
@@ -72,76 +201,104 @@ import { photos, mockups } from "../data/media";
       </Reveal>
     </div>
   </section>
-
-  <!-- VISION & MISSION -->
-  <section class="section bg-ivory">
-    <div class="wrap creed">
-      <Reveal as="figure" class="creed__card">
-        <p class="eyebrow">Our Vision</p>
-        <blockquote>
-          To create a private Tuscan sanctuary where refined comfort, nature, and wellness come
-          together. A place to slow down, reconnect, and experience effortless luxury in its most
-          authentic form.
-        </blockquote>
-      </Reveal>
-      <Reveal as="figure" class="creed__card" delay={0.08}>
-        <p class="eyebrow">Our Mission</p>
-        <blockquote>
-          Our mission is to create a sanctuary where every guest feels restored, inspired, and
-          embraced by the true essence of the Dolce Vita.
-        </blockquote>
-      </Reveal>
-    </div>
-  </section>
-
-  <!-- THE WELCOME (branding detail) -->
-  <SplitSection
-    eyebrow="Arriving"
-    title="A Welcome That Feels Personal"
-    theme="stone"
-  >
-    <p>
-      From the handwritten welcome note waiting in your suite to the honey, olives, and citrus
-      picked from the farm, every detail is arranged by two people who actually live here. A
-      WhatsApp concierge is on hand throughout your stay, and an optional butler service is
-      available for those who'd like to be looked after completely.
-    </p>
-    <div class="actions">
-      <Button href="/rooms" variant="ghost">See the suites</Button>
-      <Button href="/experiences" variant="ghost">Explore experiences</Button>
-    </div>
-    <div slot="media" class="welcome-media">
-      <Image
-        src={mockups.welcomeLetter}
-        alt="Villa Dolce Vita welcome letter and room key"
-        widths={[480, 768, 1100]}
-        sizes="(max-width: 900px) 92vw, 48vw"
-        loading="lazy"
-      />
-    </div>
-  </SplitSection>
 </BaseLayout>
 
 <style>
+  /* Intro lead — big editorial statement under the hero. */
+  .intro {
+    padding-bottom: 0;
+    text-align: center;
+  }
+  .intro__eyebrow {
+    margin-bottom: 1.2rem;
+  }
+  .intro__lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.4rem);
+    line-height: 1.4;
+    color: var(--c-forest);
+    max-width: 30ch;
+    margin-inline: auto;
+  }
+
+  /* Founders media — plain framed image (no arch). */
+  .founders-media {
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    aspect-ratio: 4 / 5;
+  }
+  .founders-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Vision & Mission cards. */
   .creed {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(1.5rem, 4vw, 3rem);
   }
-  .creed__card {
+  /* NOTE: .creed__card is rendered by <Reveal as="figure">, so it does NOT carry
+     this page's scope hash — target it (and its children) with :global(). */
+  .creed :global(.creed__card) {
     background: var(--c-ivory);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: clamp(2rem, 4vw, 3.2rem);
+    padding: clamp(2rem, 4vw, 3.4rem);
     box-shadow: var(--shadow-soft);
+    position: relative;
   }
-  .creed__card blockquote {
+  /* Gold vertical rule accent on the inner edge. */
+  .creed :global(.creed__card)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: clamp(2rem, 4vw, 3.4rem);
+    bottom: clamp(2rem, 4vw, 3.4rem);
+    width: 3px;
+    background: var(--accent);
+    border-radius: 3px;
+  }
+  .creed :global(.creed__card--dark) {
+    background: var(--c-forest);
+    border-color: transparent;
+    color: var(--c-ivory);
+  }
+  .creed :global(.creed__card) blockquote {
     margin: 1.2rem 0 0;
     font-family: var(--font-display);
     font-size: clamp(1.35rem, 1rem + 1.4vw, 2rem);
     line-height: 1.35;
     font-style: italic;
     color: var(--c-forest);
+  }
+  .creed :global(.creed__card--dark) blockquote {
+    color: var(--c-ivory);
+  }
+
+  /* Welcome detail list — small labelled rows. */
+  .welcome-list {
+    margin-top: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .welcome-list__item {
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--accent);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .welcome-list__label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin-bottom: 0.2rem;
   }
   .welcome-media {
     overflow: hidden;

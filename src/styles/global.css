@@ -3,10 +3,13 @@
    Import order: fonts -> tokens -> reset -> base -> utilities
    ========================================================================== */
 
-@import "@fontsource/playfair-display/400.css";
-@import "@fontsource/playfair-display/500.css";
-@import "@fontsource/playfair-display/600.css";
-@import "@fontsource/playfair-display/400-italic.css";
+/* Display: Cormorant Garamond (high-contrast editorial serif). */
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/cormorant-garamond/400-italic.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
+/* Body: Inter. */
 @import "@fontsource/inter/300.css";
 @import "@fontsource/inter/400.css";
 @import "@fontsource/inter/500.css";
@@ -62,6 +65,25 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Subtle global film grain — a warm tactile layer over the whole page.
+   Fixed, non-interactive, blended into the parchment. Zero network cost. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+  background-image: var(--grain);
+  background-size: 140px 140px;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+}
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    display: none;
+  }
+}
+
 img,
 picture,
 video,
@@ -95,9 +117,10 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 500;
+  /* Cormorant is lighter than Playfair, so headings carry 600 for presence. */
+  font-weight: 600;
   line-height: var(--lh-tight);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.002em;
 }
 
 h1 {
@@ -110,6 +133,7 @@ h2 {
 h3 {
   font-size: var(--fs-h3);
   line-height: var(--lh-snug);
+  font-weight: 500;
 }
 
 p {
@@ -133,6 +157,20 @@ em,
 .eyebrow--gold {
   color: var(--accent);
 }
+/* Eyebrow preceded by a small 45deg diamond — the "Geometry" signature. */
+.eyebrow--diamond {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.eyebrow--diamond::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  border: 1px solid currentColor;
+  flex: 0 0 auto;
+}
 
 .lead {
   font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
@@ -144,13 +182,48 @@ em,
   color: var(--text-on-dark-muted);
 }
 
-/* Gold hairline used under eyebrows/headings in the brand guide */
+/* Amber hairline used under eyebrows/headings. */
 .rule {
   width: 3.5rem;
   height: 1px;
   background: var(--accent);
   border: 0;
   margin: 1.25rem 0;
+}
+
+/* ---------- Diamond divider (the "Geometry" signature) ----------
+   A thin full-width hairline with a small 45deg diamond centered on it.
+   Echoes the brand's diamond ornament in the reference proposal.
+   Usage: <div class="divider"></div>  (or .divider--dark on cypress). */
+.divider {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  background: var(--line);
+  margin-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+.divider::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--bg);
+  border: 1px solid var(--accent-deep);
+}
+.divider--dark {
+  background: var(--line-on-dark);
+}
+.divider--dark::before {
+  background: var(--bg-dark);
+  border-color: var(--accent);
+}
+/* Short centered variant for use under headings. */
+.divider--short {
+  width: min(9rem, 40%);
+  margin-inline: auto;
 }
 
 /* ---------- Layout primitives (FULL-WIDTH by default) ---------- */
@@ -192,6 +265,11 @@ em,
   background: var(--surface-sunk);
   color: var(--text);
 }
+/* Warm terracotta-tinted ground for measured accent bands. */
+.bg-warm {
+  background: var(--surface-warm);
+  color: var(--text);
+}
 
 /* ---------- Editorial card (single source of truth) ----------
    Replaces the repeated "border + radius + translateY(-5px) + colored shadow"
@@ -211,7 +289,7 @@ em,
     transform var(--dur) var(--ease-out);
 }
 .card:hover {
-  border-color: rgba(168, 132, 90, 0.5); /* warm bronze hairline */
+  border-color: rgba(196, 122, 90, 0.55); /* warm terracotta hairline */
   box-shadow: var(--shadow-card);
   transform: translateY(-3px);
 }
@@ -339,9 +417,10 @@ a.card {
 .tc__controls {
   margin-top: 2.5rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 .tc__dots {
   display: flex;
@@ -351,7 +430,7 @@ a.card {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(210, 180, 140, 0.35);
+  background: rgba(201, 151, 77, 0.35);
   transition: background 0.3s, transform 0.3s;
   cursor: pointer;
 }

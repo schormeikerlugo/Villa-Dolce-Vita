@@ -28,7 +28,11 @@ const { eyebrow, title, image, imageAlt = "" } = Astro.props;
     <div class="pagehero__overlay" aria-hidden="true"></div>
   </div>
   <div class="pagehero__content wrap">
-    {eyebrow && <p class="eyebrow eyebrow--gold">{eyebrow}</p>}
+    {eyebrow && (
+      <p class="eyebrow eyebrow--gold pagehero__eyebrow">
+        <span class="pagehero__diamond" aria-hidden="true"></span>{eyebrow}
+      </p>
+    )}
     <h1>{title}</h1>
   </div>
 </section>
@@ -56,9 +60,9 @@ const { eyebrow, title, image, imageAlt = "" } = Astro.props;
     inset: 0;
     background: linear-gradient(
       to bottom,
-      rgba(15, 42, 36, 0.4) 0%,
-      rgba(15, 42, 36, 0.15) 45%,
-      rgba(27, 30, 31, 0.7) 100%
+      rgba(47, 63, 53, 0.42) 0%,
+      rgba(47, 63, 53, 0.16) 45%,
+      rgba(38, 36, 31, 0.72) 100%
     );
   }
   .pagehero__content {
@@ -73,5 +77,18 @@ const { eyebrow, title, image, imageAlt = "" } = Astro.props;
   }
   .pagehero__content .eyebrow {
     margin-bottom: 1rem;
+  }
+  /* Small diamond ornament preceding the eyebrow — the "Geometry" motif. */
+  .pagehero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .pagehero__diamond {
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    border: 1px solid var(--accent);
+    display: inline-block;
   }
 </style>

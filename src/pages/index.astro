@@ -33,9 +33,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
   <Hero eyebrow="Massa Marittima, Tuscany" video="laDolceVita" booking>
     <Fragment slot="title">Under The<br /><em>Tuscan Sun</em></Fragment>
     <Fragment slot="subtitle">A Tuscan sanctuary of beauty, soul & timeless living.</Fragment>
-    <Fragment slot="actions">
-      <Button href={bookingHref} variant="primary">Check Availability</Button>
-    </Fragment>
   </Hero>
 
   <!-- FEATURE BAR — six-icon amenities strip, now its own band below the hero -->
@@ -121,40 +118,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     </div>
   </section>
 
-  <!-- THE EXPERIENCE — pinned crossfade over a night-sky video -->
-  <section class="experience" data-pin-fade>
-    <BackgroundVideo video="nightSky" overlay={false} />
-    <div class="experience__scrim" aria-hidden="true"></div>
-    <div class="experience__layers wrap">
-      <div class="experience__layer" data-pin-layer>
-        <p class="eyebrow eyebrow--gold">The Experience</p>
-        <h2>Nobody Needs You Right Now</h2>
-        <p class="experience__body">
-          Your phone still works up here. That's the problem, usually. Villa Dolce Vita doesn't
-          take it away from you. It just puts you on top of a hill with a view of two countries'
-          worth of coastline and lets the silence do what silence does.
-        </p>
-      </div>
-      <div class="experience__layer" data-pin-layer>
-        <h2>There's a Pool. There's a Forest That's a Sauna.</h2>
-        <p class="experience__body">
-          There are two dogs who have never had a bad day in their lives and will not let you
-          have one either. Somewhere around hour six, most guests stop checking their email. By
-          day two, they've forgotten why they were checking it in the first place.
-        </p>
-      </div>
-      <div class="experience__layer" data-pin-layer>
-        <h2>Rest Isn't a Program Here.</h2>
-        <p class="experience__body">
-          It's just what happens when you stop being anywhere else.
-        </p>
-        <div class="experience__actions">
-          <Button href="/experiences" variant="secondary" onDark>Explore Experiences</Button>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- BEYOND THE VILLA -->
   <section class="section bg-dark beyond">
     <div class="wrap">
@@ -179,24 +142,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     </div>
   </section>
 
-  <!-- WEDDINGS -->
-  <SplitSection
-    eyebrow="Weddings"
-    title="A Marble Terrace on Top of a Hill"
-    image={photos.hillsPinkDawn}
-    imageAlt="Hilltop terrace at dawn, sea on the horizon"
-    reverse
-  >
-    <p>
-      Fifty to a hundred guests, a marble terrace on top of a hill, and a sunset that sets
-      directly behind Elba and Corsica if the timing is right. Villa Dolce Vita was built for
-      weddings this size, not scaled down to fit them.
-    </p>
-    <div class="actions">
-      <Button href="/weddings-events" variant="ghost">Plan your wedding</Button>
-    </div>
-  </SplitSection>
-
   <!-- TESTIMONIALS -->
   <section class="section bg-charcoal testimonials">
     <div class="wrap">
@@ -208,124 +153,43 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
   <!-- JOURNAL -->
   <section class="section bg-ivory">
     <div class="wrap">
-      <div class="suites-head">
-        <SectionHeader eyebrow="From the Journal" title="A Running Local Guide" align="left">
+      <div class="journal-head">
+        <SectionHeader eyebrow="From the Journal" title="A Running Local Guide" align="center">
           <p>Things to do nearby, restaurant spotlights, and life at the estate.</p>
         </SectionHeader>
-        <Button href="/journal" variant="ghost" class="suites-head__cta">Read the Journal</Button>
+        <Button href="/journal" variant="ghost" class="journal-head__cta">Read the Journal</Button>
       </div>
-      {/* Featured overlay posts as a carousel — all articles live here. */}
-      <div class="jcarousel" data-jcarousel>
-        <div class="jcarousel__track">
-          {
-            journalTeasers.map((a, i) => (
-              <a
-                class:list={["jfeature", "jcarousel__slide", { "is-active": i === 0 }]}
-                href={`/journal/${a.slug}`}
-                data-jslide
-                aria-hidden={i === 0 ? "false" : "true"}
-              >
-                <div class="jfeature__media">
-                  <Image
-                    src={a.image}
-                    alt={a.imageAlt}
-                    widths={[768, 1200, 1600, 2000]}
-                    sizes="(max-width: 900px) 92vw, 88vw"
-                    loading={i === 0 ? "eager" : "lazy"}
-                  />
-                </div>
-                <div class="jfeature__scrim" aria-hidden="true" />
-                <div class="jfeature__text">
-                  <span class="eyebrow eyebrow--gold">{a.category}</span>
-                  <h3 class="jfeature__title">{a.title}</h3>
-                  <p class="jfeature__excerpt">{a.excerpt}</p>
-                  <span class="jfeature__more">Read the story →</span>
-                </div>
-              </a>
-            ))
-          }
-        </div>
-
-        <div class="jcarousel__controls">
-          <div class="jcarousel__dots" role="tablist" aria-label="Journal articles">
-            {
-              journalTeasers.map((a, i) => (
-                <button
-                  type="button"
-                  class:list={["jcarousel__dot", { "is-active": i === 0 }]}
-                  data-jdot
-                  role="tab"
-                  aria-selected={i === 0 ? "true" : "false"}
-                  aria-label={a.title}
+      {/* Journal posts as an alternating editorial zigzag: text one side,
+          image the other, flipping on every row. */}
+      <div class="jzig">
+        {
+          journalTeasers.map((a, i) => (
+            <a
+              class:list={["jrow", { "jrow--reverse": i % 2 === 0 }]}
+              href={`/journal/${a.slug}`}
+              data-reveal
+              data-reveal-delay={i * 0.05}
+            >
+              <div class="jrow__media">
+                <Image
+                  src={a.image}
+                  alt={a.imageAlt}
+                  widths={[600, 900, 1300]}
+                  sizes="(max-width: 860px) 92vw, 48vw"
+                  loading="lazy"
                 />
-              ))
-            }
-          </div>
-          <div class="jcarousel__arrows">
-            <button type="button" class="jcarousel__arrow" data-jprev aria-label="Previous article">‹</button>
-            <button type="button" class="jcarousel__arrow" data-jnext aria-label="Next article">›</button>
-          </div>
-        </div>
+              </div>
+              <div class="jrow__body">
+                <span class="eyebrow eyebrow--gold">{a.category}</span>
+                <h3 class="jrow__title">{a.title}</h3>
+                <p class="jrow__excerpt">{a.excerpt}</p>
+                <span class="jrow__more">Read the story →</span>
+              </div>
+            </a>
+          ))
+        }
       </div>
     </div>
-
-    <script>
-      // Journal carousel: crossfade slides with dots + arrows + autoplay.
-      document.querySelectorAll<HTMLElement>("[data-jcarousel]").forEach((root) => {
-        const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-jslide]"));
-        const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-jdot]"));
-        if (slides.length < 2) return;
-
-        let index = 0;
-        let timer: number | undefined;
-        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-        const show = (next: number) => {
-          index = (next + slides.length) % slides.length;
-          slides.forEach((s, i) => {
-            const active = i === index;
-            s.classList.toggle("is-active", active);
-            s.setAttribute("aria-hidden", active ? "false" : "true");
-          });
-          dots.forEach((d, i) => {
-            const active = i === index;
-            d.classList.toggle("is-active", active);
-            d.setAttribute("aria-selected", active ? "true" : "false");
-          });
-        };
-
-        const stop = () => {
-          if (timer) window.clearInterval(timer);
-        };
-        const start = () => {
-          if (reduce) return;
-          stop();
-          timer = window.setInterval(() => show(index + 1), 6500);
-        };
-
-        dots.forEach((d, i) =>
-          d.addEventListener("click", (e) => {
-            e.preventDefault();
-            show(i);
-            start();
-          }),
-        );
-        root.querySelector("[data-jnext]")?.addEventListener("click", (e) => {
-          e.preventDefault();
-          show(index + 1);
-          start();
-        });
-        root.querySelector("[data-jprev]")?.addEventListener("click", (e) => {
-          e.preventDefault();
-          show(index - 1);
-          start();
-        });
-
-        root.addEventListener("mouseenter", stop);
-        root.addEventListener("mouseleave", start);
-        start();
-      });
-    </script>
   </section>
 
   <!-- FINAL CTA -->
@@ -381,10 +245,10 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     z-index: 1;
     background: radial-gradient(
       ellipse 60% 75% at 50% 50%,
-      rgba(15, 42, 36, 0.6) 0%,
-      rgba(15, 42, 36, 0.4) 45%,
-      rgba(15, 42, 36, 0.12) 75%,
-      rgba(15, 42, 36, 0) 100%
+      rgba(47, 63, 53, 0.62) 0%,
+      rgba(47, 63, 53, 0.42) 45%,
+      rgba(47, 63, 53, 0.12) 75%,
+      rgba(47, 63, 53, 0) 100%
     );
   }
   .townband__inner {
@@ -426,9 +290,9 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     .townband__scrim {
       background: linear-gradient(
         180deg,
-        rgba(15, 42, 36, 0.55) 0%,
-        rgba(15, 42, 36, 0.82) 55%,
-        rgba(15, 42, 36, 0.9) 100%
+        rgba(47, 63, 53, 0.55) 0%,
+        rgba(47, 63, 53, 0.82) 55%,
+        rgba(47, 63, 53, 0.9) 100%
       );
     }
     .townband__panel {
@@ -441,7 +305,7 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     width: 100%;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 30px 50px rgba(15, 42, 36, 0.18));
+    filter: drop-shadow(0 30px 50px rgba(47, 63, 53, 0.18));
   }
 
   /* Section header with a link that sits on the title's baseline, then the grid. */
@@ -557,58 +421,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     }
   }
 
-  /* The Experience — pinned */
-  .experience {
-    position: relative;
-    min-height: 100svh;
-    display: flex;
-    align-items: center;
-    color: var(--c-ivory);
-    overflow: hidden;
-  }
-  .experience__scrim {
-    position: absolute;
-    inset: 0;
-    background: rgba(15, 42, 36, 0.62);
-  }
-  .experience__layers {
-    position: relative;
-    z-index: 2;
-    display: grid;
-  }
-  .experience__layer {
-    grid-area: 1 / 1;
-    max-width: 46ch;
-  }
-
-  /* Reduced motion / no-JS: the pin crossfade can't run, so stack the layers
-     vertically and let them all read normally instead of overlapping. */
-  @media (prefers-reduced-motion: reduce) {
-    .experience {
-      min-height: 0;
-      padding-block: var(--section-y);
-    }
-    .experience__layers {
-      display: block;
-    }
-    .experience__layer {
-      max-width: 60ch;
-    }
-    .experience__layer + .experience__layer {
-      margin-top: 3rem;
-    }
-  }
-  .experience__layer h2 {
-    margin: 1rem 0 1.5rem;
-  }
-  .experience__body {
-    color: var(--text-on-dark-muted);
-    font-size: 1.05rem;
-  }
-  .experience__actions {
-    margin-top: 2rem;
-  }
-
   /* Beyond the Villa list */
   .beyond__grid {
     display: grid;
@@ -626,7 +438,7 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     transition: background var(--dur) var(--ease-out);
   }
   .beyond__item a:hover {
-    background: rgba(210, 180, 140, 0.1);
+    background: rgba(196, 122, 90, 0.14); /* terracotta wash on hover */
   }
   .beyond__name {
     font-family: var(--font-display);
@@ -640,154 +452,105 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     transform: translateX(6px);
   }
 
-  /* Journal — carousel of featured overlay posts. */
-  .jcarousel {
-    position: relative;
+  /* Journal section header — centered, with the CTA sitting below the intro. */
+  .journal-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--space-group);
   }
-  .jcarousel__track {
-    position: relative;
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow-soft);
-    aspect-ratio: 16 / 9;
+  .journal-head :global(.sechead) {
+    margin-bottom: 1.5rem;
+  }
+  .journal-head__cta {
+    align-self: center;
   }
 
-  /* Featured: full-bleed image with copy overlaid on a gradient. */
-  .jfeature {
+  /* Journal — alternating editorial rows (text / image, flipping each row). */
+  .jzig {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 6vw, 6rem);
+  }
+  .jrow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    color: var(--text);
+  }
+  /* Flip odd rows: image on the left, text on the right. */
+  .jrow--reverse .jrow__media {
+    order: 2;
+  }
+  .jrow__media {
     position: relative;
-    display: block;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
-    color: var(--c-ivory);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
   }
-  /* Slides fill the track and crossfade (track holds the aspect-ratio). */
-  .jcarousel__slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    visibility: hidden;
-    z-index: 0;
-    transition: opacity 0.8s var(--ease-out), visibility 0s linear 0.8s;
-  }
-  .jcarousel__slide.is-active {
-    opacity: 1;
-    visibility: visible;
-    z-index: 1;
-    transition: opacity 0.8s var(--ease-out), visibility 0s;
-  }
-  .jfeature__media {
-    position: absolute;
-    inset: 0;
-  }
-  .jfeature__media :global(img) {
+  .jrow__media :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform var(--dur) var(--ease-out);
   }
-  .jfeature__scrim {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(15, 42, 36, 0.88) 0%,
-      rgba(15, 42, 36, 0.45) 42%,
-      rgba(15, 42, 36, 0) 68%
-    );
+  .jrow:hover .jrow__media :global(img) {
+    transform: scale(1.05);
   }
-  .jfeature__text {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    padding: clamp(1.8rem, 4vw, 3.5rem);
-    max-width: 60ch;
+  .jrow__body {
+    max-width: 46ch;
   }
-  .jfeature__title {
+  .jrow__title {
     margin-top: 0.7rem;
-    font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.8rem);
-    line-height: 1.12;
-    color: var(--c-ivory);
+    font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem);
+    line-height: 1.14;
   }
-  .jfeature__excerpt {
-    margin-top: 0.9rem;
-    color: var(--text-on-dark-muted);
-    font-size: 1rem;
-    line-height: 1.6;
-    max-width: 56ch;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .jrow__excerpt {
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
   }
-  .jfeature__more {
+  .jrow__more {
     display: inline-block;
-    margin-top: 1.3rem;
+    margin-top: 1.5rem;
     font-size: 0.74rem;
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
-    color: var(--accent);
-    transition: transform var(--dur-fast) var(--ease-out);
+    color: var(--accent-deep);
+    position: relative;
   }
-  .jfeature:hover .jfeature__more {
-    transform: translateX(4px);
+  .jrow__more::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease-out);
   }
-
-  /* Slow Ken-Burns zoom while a slide is the active one. */
-  .jcarousel__slide .jfeature__media :global(img) {
-    transform: scale(1);
-  }
-  .jcarousel__slide.is-active .jfeature__media :global(img) {
-    animation: jkenburns 8s var(--ease-out) forwards;
-  }
-  @keyframes jkenburns {
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(1.08);
-    }
+  .jrow:hover .jrow__more::after {
+    transform: scaleX(0);
+    transform-origin: right;
   }
 
-  /* Carousel controls */
-  .jcarousel__controls {
-    margin-top: 1.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-  }
-  .jcarousel__dots {
-    display: flex;
-    gap: 0.6rem;
-  }
-  .jcarousel__dot {
-    width: 32px;
-    height: 3px;
-    border-radius: 999px;
-    background: var(--line);
-    cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-out);
-  }
-  .jcarousel__dot.is-active {
-    background: var(--accent-deep);
-  }
-  .jcarousel__arrows {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .jcarousel__arrow {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 1px solid var(--line);
-    color: var(--text);
-    font-size: 1.4rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
-  }
-  .jcarousel__arrow:hover {
-    background: var(--c-forest);
-    color: var(--c-ivory);
-    border-color: var(--c-forest);
+  @media (max-width: 860px) {
+    .jrow {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    /* On mobile keep image first for every row for a consistent rhythm. */
+    .jrow--reverse .jrow__media {
+      order: 0;
+    }
+    .jrow__body {
+      max-width: none;
+    }
   }
 
   /* Final CTA */
@@ -821,22 +584,4 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     margin-bottom: 1rem;
   }
 
-  @media (max-width: 820px) {
-    .jcarousel__track {
-      aspect-ratio: 3 / 4;
-    }
-    .jfeature__excerpt {
-      -webkit-line-clamp: 3;
-    }
-  }
-
-  /* Respect reduced motion: no zoom, instant slide change. */
-  @media (prefers-reduced-motion: reduce) {
-    .jcarousel__slide.is-active .jfeature__media :global(img) {
-      animation: none;
-    }
-    .jcarousel__slide {
-      transition: none;
-    }
-  }
 </style>

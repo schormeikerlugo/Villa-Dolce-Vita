@@ -9,7 +9,7 @@ import type { ImageMetadata } from "astro";
 export interface JournalArticle {
   slug: string;
   title: string;
-  category: "Things To Do" | "Restaurant Spotlight" | "Estate Diary";
+  category: "Things To Do" | "Restaurant Spotlight" | "Estate Diary" | "Wine & Vineyards";
   excerpt: string;
   /** Body paragraphs, in order. */
   body: string[];
@@ -20,7 +20,7 @@ export interface JournalArticle {
 export const journal: JournalArticle[] = [
   {
     slug: "lago-dell-accesa",
-    title: "The Lake Ten Minutes Away That Somehow Isn't Overrun",
+    title: "10 Things to Do in Tuscany",
     category: "Things To Do",
     excerpt:
       "Ten minutes from the villa there's a lake called Lago dell'Accesa — turquoise, spring-fed, and cold enough to make you gasp the first time you get in.",
@@ -35,8 +35,7 @@ export const journal: JournalArticle[] = [
   },
   {
     slug: "la-tana-dei-brilli",
-    title:
-      "The Smallest Restaurant in Italy Doesn't Take Big Groups, and Doesn't Care That You're Annoyed About It",
+    title: "Best Restaurants in Follonica",
     category: "Restaurant Spotlight",
     excerpt:
       "La Tana dei Brilli seats maybe twelve people, total. It calls itself the smallest osteria in Italy. Nobody has seriously challenged the claim.",
@@ -51,7 +50,7 @@ export const journal: JournalArticle[] = [
   },
   {
     slug: "capri-and-santo",
-    title: "Meet Capri and Santo, Who Did Not Ask to Be Famous But Are, Regardless",
+    title: "Our Favorite Cafe in Massa Marittima",
     category: "Estate Diary",
     excerpt:
       "Every villa has a mascot. Villa Dolce Vita has two, and neither of them signed up for the job.",
@@ -63,6 +62,21 @@ export const journal: JournalArticle[] = [
       "Most of the animals came from somewhere harder than this. A stray population is not unusual in rural Tuscany, and not every farmhouse decides to do something about it. This one did, and the result is a property where cats sunbathe on the terrace stones and dogs consider every guest a personal responsibility.",
       "Nobody is forcing an interaction. The pool chairs work fine without a dog lying under them. But by the second day, most guests have stopped asking whether the animals are friendly and started asking whether they can bring one home.",
       "The answer to that, for the record, is no. Everyone asks. The answer stays no.",
+    ],
+  },
+  {
+    slug: "best-tuscan-vineyards",
+    title: "5 Best Tuscan Vineyards",
+    category: "Wine & Vineyards",
+    excerpt:
+      "From Montalcino's Brunello to the coastal Super Tuscans of Bolgheri, five estates within an easy drive of the villa that are worth the detour and the tasting.",
+    image: photos.cypressRoad,
+    imageAlt: "A cypress-lined road winding through Tuscan vineyard country",
+    body: [
+      "Tuscany doesn't have a shortage of vineyards. It has the opposite problem. Every hillside within an hour of the villa seems to grow something worth bottling, and deciding where to spend an afternoon is harder than it sounds. These are the five we send guests to first.",
+      "Start with Montalcino if you only have one day. Brunello is the region's serious wine, aged long and priced accordingly, and the drive up to the town alone is worth the trip. Book a tasting at one of the smaller family estates rather than the big names — the pours are more generous and the conversation is better.",
+      "Closer to the coast, Bolgheri makes the Super Tuscans that put the region on the international map. The cypress-lined avenue into town is the one from the postcards. The wines are bold, cabernet-driven, and nothing like the Sangiovese you'll taste inland.",
+      "For something quieter, the small producers around Massa Marittima and the Maremma pour Vermentino and Ciliegiolo that rarely leave the region. No crowds, no tasting-room theatre, just a farmer, a few bottles, and a view. Ask us and we'll make the call for you.",
     ],
   },
 ];

@@ -43,10 +43,14 @@ const {
     aspect-ratio: 3 / 4;
     box-shadow: var(--shadow-soft);
   }
+  /* Extra vertical bleed so the parallax shift never exposes a gap inside the
+     frame. The media travels via yPercent (relative to its OWN height): with
+     strength ~0.12 and height 140%, that's ~0.12 * 140% = ~17% of the frame.
+     A 20% bleed on each edge keeps the frame covered across the whole range. */
   .arch__media {
     position: absolute;
-    inset: -8% 0;
-    height: 116%;
+    inset: -20% 0;
+    height: 140%;
   }
   .arch__media :global(img) {
     width: 100%;
