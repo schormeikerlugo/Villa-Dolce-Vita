@@ -10,7 +10,7 @@ import Hero from "../components/Hero.astro";
 import FeatureBar from "../components/FeatureBar.astro";
 import SplitSection from "../components/SplitSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
-import SuiteCard from "../components/SuiteCard.astro";
+import SuitesShowcase from "../components/SuitesShowcase.astro";
 import Button from "../components/Button.astro";
 import Reveal from "../components/Reveal.astro";
 import BackgroundVideo from "../components/BackgroundVideo.astro";
@@ -52,6 +52,7 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
       widths={[560, 900, 1300, 1800]}
       sizes="(max-width: 900px) 92vw, 52vw"
       loading="lazy"
+      data-mouse-parallax="14"
     />
     <p>
       After years in corporate America, Linda and Frank traded the fast-paced life for the
@@ -65,7 +66,7 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
       escape rather than the postcard.
     </p>
     <div class="actions">
-      <Button href="/about-us" variant="ghost">Read our story</Button>
+      <Button href="/our-story" variant="ghost">Read our story</Button>
     </div>
   </SplitSection>
 
@@ -97,31 +98,17 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     </div>
   </section>
 
-  <!-- THE SUITES — asymmetric: the premium suite leads, the rest support it. -->
-  <section class="section bg-ivory">
-    <div class="wrap">
-      <div class="suites-head">
-        <SectionHeader eyebrow="The Suites" title="Five Rooms, One View" align="left">
-          <p>Sophisticated comfort and genuine charm, curated for real rest.</p>
-        </SectionHeader>
-        <Button href="/rooms" variant="ghost" class="suites-head__cta">Explore all suites</Button>
-      </div>
-      <div class="suites-metro">
-        {
-          orderedSuites.map((s, i) => (
-            <div class:list={["suites-metro__cell", `suites-metro__cell--${i}`]}>
-              <SuiteCard suite={s} featured={i === 0} />
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <!-- THE SUITES — horizontal carousel with a large, centred hero card. -->
+  <SuitesShowcase
+    suites={orderedSuites}
+    title="Five Rooms, One View"
+    subtitle="Sophisticated comfort and genuine charm, curated for real rest."
+  />
 
   <!-- BEYOND THE VILLA -->
   <section class="section bg-dark beyond">
     <div class="wrap">
-      <SectionHeader eyebrow="Beyond the Villa" title="This Is What There Is to Do Here, Beyond Nothing at All" align="center" onDark>
+      <SectionHeader eyebrow="Beyond the Villa" title="This Is What There Is to Do Here, Beyond Nothing at All" align="center" onDark class="beyond-head">
         <p style="color:var(--text-on-dark-muted)">
           Wine tastings ten minutes away. Horses through the olive groves. A cooking class that
           ends with a flaming wheel of parmigiano.
@@ -139,14 +126,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
           ))
         }
       </ul>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section class="section bg-charcoal testimonials">
-    <div class="wrap">
-      <SectionHeader eyebrow="What Guests Say" title="Kind Words" align="center" onDark />
-      <TestimonialCarousel client:visible items={testimonials} />
     </div>
   </section>
 
@@ -181,13 +160,75 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
               </div>
               <div class="jrow__body">
                 <span class="eyebrow eyebrow--gold">{a.category}</span>
-                <h3 class="jrow__title">{a.title}</h3>
+                <h2 class="jrow__title">{a.title}</h2>
                 <p class="jrow__excerpt">{a.excerpt}</p>
                 <span class="jrow__more">Read the story →</span>
               </div>
             </a>
           ))
         }
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section bg-charcoal testimonials">
+    <div class="wrap">
+      <SectionHeader eyebrow="What Guests Say" title="Kind Words" align="center" onDark />
+      <TestimonialCarousel client:load items={testimonials} />
+    </div>
+  </section>
+
+  <!-- WEDDINGS & EVENTS — editorial teaser: oversized headline, meta + copy +
+       actions, and a staggered three-photo strip linking to /weddings-events. -->
+  <section class="section bg-ivory weddings" aria-labelledby="weddings-title">
+    <div class="wrap weddings__split">
+      <div class="weddings__intro">
+        <Reveal as="p" class="eyebrow eyebrow--diamond weddings__eyebrow">Weddings &amp; Events</Reveal>
+        <Reveal as="h2" delay={0.05} class="weddings__title" id="weddings-title">
+          Weddings Under<br /><em>the Tuscan Sun</em>
+        </Reveal>
+
+        <div class="weddings__lead">
+          <Reveal as="p" class="weddings__copy" delay={0.1}>
+            Ceremonies on the hilltop terrace, cocktail hour rolling straight into sunset, and a
+            reception that spills from the marble into the vineyard rows — with the sea and the
+            islands on the horizon.
+          </Reveal>
+          <Reveal class="weddings__actions" delay={0.14}>
+            <Button href="/weddings-events" variant="primary">Explore Weddings</Button>
+          </Reveal>
+        </div>
+      </div>
+
+      <div class="weddings__gallery">
+        <figure class="wtile wtile--1" data-reveal data-reveal-delay={0.05}>
+          <Image
+            src={photos.weddingVeil}
+            alt="Bride and groom beneath a veil in the golden Tuscan light"
+            widths={[420, 640, 900]}
+            sizes="(max-width: 860px) 92vw, 30vw"
+            loading="lazy"
+          />
+        </figure>
+        <figure class="wtile wtile--2" data-reveal data-reveal-delay={0.12}>
+          <Image
+            src={photos.weddingDance}
+            alt="A couple's first dance, gown lit against the dark"
+            widths={[420, 640, 900]}
+            sizes="(max-width: 860px) 92vw, 30vw"
+            loading="lazy"
+          />
+        </figure>
+        <figure class="wtile wtile--3" data-reveal data-reveal-delay={0.19}>
+          <Image
+            src={photos.weddingBouquet}
+            alt="Bride holding an illuminated bouquet beside the groom"
+            widths={[420, 640, 900]}
+            sizes="(max-width: 860px) 92vw, 30vw"
+            loading="lazy"
+          />
+        </figure>
       </div>
     </div>
   </section>
@@ -212,6 +253,12 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
      carry this page's scope hash — the whole selector must be :global(). */
   :global(.features + .section) {
     padding-top: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  /* "Beyond the Villa" heading: dial back to a real h2 size (site-wide h2s
+     were bumped up to h1 scale). This one title only. */
+  :global(.beyond-head h2) {
+    font-size: var(--fs-h2);
   }
   /* Welcome split leads straight into the Massa Marittima band — no bottom gap. */
   :global(.features + .section.split) {
@@ -308,119 +355,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     filter: drop-shadow(0 30px 50px rgba(47, 63, 53, 0.18));
   }
 
-  /* Section header with a link that sits on the title's baseline, then the grid. */
-  .suites-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 2rem 3rem;
-    flex-wrap: wrap;
-    margin-bottom: var(--space-group);
-  }
-  .suites-head :global(.sechead) {
-    /* header owns the bottom margin now */
-    margin-bottom: 0;
-    flex: 1 1 30ch;
-  }
-  .suites-head__cta {
-    flex: 0 0 auto;
-    /* nudge down to line up with the first line of the title */
-    transform: translateY(0.6rem);
-    white-space: nowrap;
-  }
-  @media (max-width: 720px) {
-    .suites-head__cta {
-      transform: none;
-    }
-  }
-  /* ---- Suites: metro mosaic ----
-     4 equal columns, 2 equal rows. The signature suite (cell 0) claims a 2×2
-     hero tile on the left; the four supporting suites fill a clean 2×2 grid
-     on the right — no gaps.
-
-       [ 0 0 1 2 ]
-       [ 0 0 3 4 ]                                                        */
-  .suites-metro {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, minmax(15rem, 1fr));
-    gap: clamp(1rem, 1.8vw, 1.6rem);
-  }
-  .suites-metro__cell {
-    display: flex;
-    min-width: 0;
-  }
-  .suites-metro__cell > :global(.suite) {
-    width: 100%;
-  }
-  /* Signature suite: big hero tile spanning the left half. */
-  .suites-metro__cell--0 {
-    grid-column: 1 / 3;
-    grid-row: 1 / 3;
-  }
-  .suites-metro__cell--1 { grid-column: 3; grid-row: 1; }
-  .suites-metro__cell--2 { grid-column: 4; grid-row: 1; }
-  .suites-metro__cell--3 { grid-column: 3; grid-row: 2; }
-  .suites-metro__cell--4 { grid-column: 4; grid-row: 2; }
-
-  /* Every card fills its tile; images grow to consume the tile height. */
-  .suites-metro__cell :global(.suite__media) {
-    aspect-ratio: auto;
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-
-  .center-cta {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--space-group);
-  }
-
-  /* Tablet: 2 columns; hero spans the full width on top, then a 2×2 grid. */
-  @media (max-width: 1000px) {
-    .suites-metro {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: auto;
-      grid-auto-rows: 1fr;
-    }
-    .suites-metro__cell--0 {
-      grid-column: 1 / 3;
-      grid-row: auto;
-    }
-    .suites-metro__cell--1,
-    .suites-metro__cell--2,
-    .suites-metro__cell--3,
-    .suites-metro__cell--4 {
-      grid-column: auto;
-      grid-row: auto;
-    }
-    .suites-metro__cell :global(.suite__media) {
-      aspect-ratio: 4 / 5;
-      flex: 0 0 auto;
-    }
-    .suites-metro__cell--0 :global(.suite__media) {
-      aspect-ratio: 16 / 10;
-    }
-  }
-  /* Phone: single column stack. */
-  @media (max-width: 560px) {
-    .suites-metro {
-      grid-template-columns: 1fr;
-    }
-    .suites-metro__cell--0 {
-      grid-column: 1;
-    }
-    .suites-metro__cell :global(.suite__media),
-    .suites-metro__cell--0 :global(.suite__media) {
-      aspect-ratio: 4 / 3;
-    }
-  }
-  @media (max-width: 900px) {
-    .suites-head__cta {
-      margin-bottom: 1.5rem;
-    }
-  }
-
   /* Beyond the Villa list */
   .beyond__grid {
     display: grid;
@@ -504,7 +438,7 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
   }
   .jrow__title {
     margin-top: 0.7rem;
-    font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem);
+    font-size: var(--fs-h2);
     line-height: 1.14;
   }
   .jrow__excerpt {
@@ -550,6 +484,142 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     }
     .jrow__body {
       max-width: none;
+    }
+  }
+
+  /* ── WEDDINGS & EVENTS — editorial teaser ────────────────────────────── */
+  /* Two columns: text intro left, photo gallery right (fills the empty space). */
+  .weddings__split {
+    display: grid;
+    grid-template-columns: 0.92fr 1.08fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  .weddings__intro {
+    align-self: center;
+  }
+  .weddings__eyebrow {
+    margin-bottom: 0.4rem;
+  }
+  /* Oversized display headline, hero-scale. Sits left, two lines. */
+  .weddings__title {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.01em;
+    margin-bottom: clamp(1.5rem, 3vw, 2.4rem);
+  }
+  .weddings__title em {
+    font-style: italic;
+    color: var(--accent-deep);
+  }
+  /* Copy + action, left-aligned to match the other section intros. */
+  .weddings__lead {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1.5rem, 3vw, 2.2rem);
+  }
+  .weddings__copy {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 52ch;
+  }
+  .weddings__actions {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.1rem;
+  }
+
+  /* Staggered three-photo strip. */
+  .weddings__gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 2.5vw, 2rem);
+    align-items: start;
+  }
+  .wtile {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    /* Entrance animation: fade + rise, staggered per tile. */
+    opacity: 0;
+    transform: translateY(40px);
+    animation: wtile-in 0.9s var(--ease-out) forwards;
+  }
+  .wtile :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .wtile:hover :global(img) {
+    transform: scale(1.04);
+  }
+  /* Different heights + vertical offsets for editorial rhythm.
+     Heights reduced ~15% (wider aspect ratios). */
+  .wtile--1 {
+    aspect-ratio: 3 / 3.4;
+    margin-top: clamp(1rem, 2.5vw, 2.4rem);
+    animation-delay: 0.05s;
+  }
+  .wtile--2 {
+    aspect-ratio: 4 / 4.25;
+    animation-delay: 0.15s;
+  }
+  .wtile--2 :global(img) {
+    object-position: center 30%;
+  }
+  .wtile--3 {
+    aspect-ratio: 3 / 3.4;
+    margin-top: clamp(0.8rem, 2vw, 1.6rem);
+    animation-delay: 0.25s;
+  }
+
+  @keyframes wtile-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wtile {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+  /* Third tile reads black-and-white. */
+  .wtile--3 :global(img) {
+    filter: grayscale(1) contrast(1.04);
+  }
+
+  @media (max-width: 900px) {
+    .weddings__split {
+      grid-template-columns: 1fr;
+      gap: clamp(2rem, 6vw, 3.5rem);
+    }
+  }
+  @media (max-width: 860px) {
+    .weddings__gallery {
+      grid-template-columns: 1fr 1fr;
+    }
+    .wtile--1,
+    .wtile--2,
+    .wtile--3 {
+      margin-top: 0;
+    }
+    .wtile--3 {
+      grid-column: 1 / -1;
+      aspect-ratio: 16 / 10;
+    }
+  }
+  @media (max-width: 520px) {
+    .weddings__gallery {
+      grid-template-columns: 1fr;
     }
   }
 

@@ -127,7 +127,7 @@ h1 {
   font-size: var(--fs-h1);
 }
 h2 {
-  font-size: var(--fs-h2);
+  font-size: var(--fs-h1);
   line-height: var(--lh-snug);
 }
 h3 {
@@ -366,6 +366,12 @@ a.card {
   margin-inline: auto;
   text-align: center;
   color: var(--text-on-dark);
+  /* Reserve space so the section never collapses if the island is slow to
+     hydrate or an animation is mid-flight — content is always readable. */
+  min-height: 18rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .tc__quote {
   margin: 0;

@@ -5,7 +5,6 @@
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
-import Reveal from "../../components/Reveal.astro";
 import { Image } from "astro:assets";
 import { photos } from "../../data/media";
 import { journal, journalIntro } from "../../data/journal";
@@ -18,15 +17,10 @@ import { journal, journalIntro } from "../../data/journal";
   <PageHero
     eyebrow="From the Journal"
     title="A Running Local Guide"
+    subtitle={journalIntro}
     image={photos.hillTownValley}
     imageAlt="Medieval hilltown near the estate"
   />
-
-  <section class="section bg-ivory">
-    <div class="wrap wrap--narrow" style="text-align:center">
-      <Reveal as="p" delay={0.05} class="lead">{journalIntro}</Reveal>
-    </div>
-  </section>
 
   <section class="section bg-ivory">
     <div class="wrap">

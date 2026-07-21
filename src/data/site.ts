@@ -23,6 +23,14 @@ export const contact = {
   bookingEngine: "https://bookings.villadolcevita.eu/hotel/villa-dolce-vita",
 } as const;
 
+/** Social profiles — rendered as icon links in the footer. */
+export const social = [
+  { label: "Instagram", href: "https://instagram.com/villadolcevita.eu" },
+  { label: "TikTok", href: "https://www.tiktok.com/@villadolcevita.eu" },
+  { label: "Pinterest", href: "https://www.pinterest.com/villadolcevita" },
+  { label: "Facebook", href: "https://www.facebook.com/villadolcevita.eu" },
+] as const;
+
 /** The "Check Availability" CTA target. Currently a WhatsApp mock. */
 export const bookingHref = `${contact.whatsappHref}?text=${encodeURIComponent(
   "Hello Villa Dolce Vita, I'd like to check availability for a stay.",
@@ -30,16 +38,51 @@ export const bookingHref = `${contact.whatsappHref}?text=${encodeURIComponent(
 
 export type NavItem = { label: string; href: string };
 
+/**
+ * Flat navigation list — the canonical map of top-level pages.
+ * Consumed by the Footer (via nav.filter) and kept as a stable source of
+ * truth for SEO/sitemap. Do NOT restructure this; the Nav uses `navGroups`.
+ */
 export const nav: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/about-us" },
-  { label: "Rooms", href: "/rooms" },
+  { label: "Our Story", href: "/our-story" },
+  { label: "Suites", href: "/suites" },
   { label: "Experiences", href: "/experiences" },
   { label: "Weddings & Events", href: "/weddings-events" },
   { label: "Dining", href: "/dining" },
   { label: "Packages & Rates", href: "/packages" },
   { label: "Journal", href: "/journal" },
-  { label: "Shop", href: "/shop" },
+  { label: "Contact Us", href: "/contact" },
+];
+
+/**
+ * Grouped navigation — the shape the Nav renders. Simple links stay flat;
+ * groups carry `children` and open a dropdown. A group may also have its own
+ * `href` (e.g. "Experiences" links to /experiences AND opens its dropdown).
+ */
+export type NavNode =
+  | { label: string; href: string }
+  | { label: string; href?: string; children: NavItem[] };
+
+export const navGroups: NavNode[] = [
+  { label: "Home", href: "/" },
+  {
+    label: "The Villa",
+    children: [
+      { label: "Our Story", href: "/our-story" },
+      { label: "Suites", href: "/suites" },
+      { label: "Weddings & Events", href: "/weddings-events" },
+    ],
+  },
+  {
+    label: "Experiences",
+    href: "/experiences",
+    children: [
+      { label: "Packages & Rates", href: "/packages" },
+      { label: "Journal", href: "/journal" },
+      { label: "Dining", href: "/dining" },
+    ],
+  },
   { label: "Contact Us", href: "/contact" },
 ];
 

@@ -33,11 +33,11 @@ const features = [
   .features {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    background: rgba(47, 63, 53, 0.74);
-    backdrop-filter: blur(8px);
+    background: var(--bg-dark);
     border-top: 1px solid var(--line-on-dark);
   }
   .feature {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,26 +46,58 @@ const features = [
     padding: 1.6rem 1rem;
     color: var(--c-ivory);
     border-left: 1px solid var(--line-on-dark);
+    transition: background var(--dur-fast) var(--ease-out);
   }
   .feature:first-child {
     border-left: 0;
+  }
+  /* Accent line that grows up from the bottom on hover. */
+  .feature::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: translateX(-50%);
+    transition: width var(--dur-fast) var(--ease-out);
+  }
+  .feature:hover {
+    background: rgba(243, 238, 230, 0.05);
+  }
+  .feature:hover::after {
+    width: 100%;
   }
   .feature__icon {
     width: 34px;
     height: 34px;
     margin-bottom: 0.3rem;
+    color: var(--accent);
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .feature:hover .feature__icon {
+    transform: translateY(-4px) scale(1.08);
   }
   .feature__title {
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     font-weight: 500;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .feature:hover .feature__title {
+    color: var(--accent);
   }
   .feature__copy {
     font-size: 0.74rem;
     color: var(--text-on-dark-muted);
     line-height: 1.4;
     max-width: 16ch;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .feature:hover .feature__copy {
+    color: var(--c-ivory);
   }
 
   @media (max-width: 900px) {

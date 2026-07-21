@@ -33,3 +33,6 @@ yarn-error.log*
 # Raw source material — NOT needed for the build (Astro uses src/assets + public).
 # Heavy originals used only to (re)generate web assets via `npm run media`.
 content/
+
+# Reference material — heavy originals, not part of the build.
+referencia/

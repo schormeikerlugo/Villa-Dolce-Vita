@@ -1,0 +1,271 @@
+---
+/**
+ * Our Story — the estate's story, land, house, philosophy and mission.
+ * Copy adapted from Docs/our-story-estate-voice.md (Maremma estate voice).
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import SplitSection from "../components/SplitSection.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import StatBand from "../components/StatBand.astro";
+import QuoteBand from "../components/QuoteBand.astro";
+import Button from "../components/Button.astro";
+import Reveal from "../components/Reveal.astro";
+import { bookingHref } from "../data/site";
+import { photos } from "../data/media";
+
+const estateStats = [
+  { value: "3,000", label: "Years of view" },
+  { value: "40", label: "Acres of estate" },
+  { value: "5", label: "Private suites" },
+  { value: "1", label: "View of the sea" },
+];
+
+const values = [
+  {
+    title: "Rootedness",
+    body: "Of this place, from this place, for this place.",
+  },
+  {
+    title: "Continuity",
+    body: "Traditions kept in use, not kept in glass.",
+  },
+  {
+    title: "Hospitality",
+    body: "In the old Tuscan sense. A guest at the table is family at the table.",
+  },
+  {
+    title: "Stillness",
+    body: "Guarded on this hill as carefully as any monument.",
+  },
+  {
+    title: "Wonder",
+    body: "The daily kind. A sunset behind Corsica never becomes routine.",
+  },
+];
+---
+
+<BaseLayout
+  title="Our Story"
+  description="Villa Dolce Vita sits high on the Colline Metallifere in the Maremma — three thousand years of view, forty acres of olive groves and forest, five suites, and a single purpose: a front-row seat to the real Tuscany."
+>
+  <PageHero
+    eyebrow="Our Story"
+    title="The Maremma Was Here First"
+    image={photos.hillsPinkDawn}
+    imageAlt="Estate hills at first light, the sea on the horizon"
+  >
+    <p>
+      This is old country. The Etruscans mined these metal-bearing hills three
+      thousand years ago. The butteri, Tuscany's last working cowboys, still
+      herd cattle on horseback across the plains below. Through all of it, the
+      same view held.
+    </p>
+  </PageHero>
+
+  <!-- THE LAND -->
+  <SplitSection
+    eyebrow="The Land"
+    title="Where Tuscany Keeps Its Wildness"
+    image={photos.hillTownValley}
+    imageAlt="A medieval hilltown rising over the wild Maremma valley"
+    arch
+    reverse
+  >
+    <p>
+      The Maremma is the Tuscany that stayed itself — less discovered than
+      Chianti, more untamed than the Val d'Orcia. Turquoise lakes rest in the
+      old mining ground. Trails run through chestnut woods. The coast, forty
+      minutes away, empties out by evening.
+    </p>
+    <p>
+      The estate sits at the centre of it, high on the Colline Metallifere.
+      Forty acres of olive groves, pine and forest, threaded with walking paths
+      that all end the same way — at a view. The sea lies in one direction, the
+      hills in every other, and nothing stands between you and either.
+    </p>
+  </SplitSection>
+
+  <!-- THE HOUSE -->
+  <SplitSection
+    eyebrow="The House"
+    title="An Ancient Hill, Newly Kept"
+    image={photos.terraceTableView}
+    imageAlt="A terrace table set against the estate's hillside view"
+    theme="stone"
+  >
+    <p>
+      The hill is three thousand years old. The house does not rest on that.
+      Every suite has been renovated recently and completely, to one standard
+      held throughout: marble bathrooms, new beds dressed in fine linens, fully
+      fitted kitchens, and fine art on the walls — chosen the way everything
+      here is chosen, deliberately and to last.
+    </p>
+    <p>
+      The pairing is a rare one. A landscape that has never changed, and rooms
+      that have never been newer.
+    </p>
+    <div class="actions">
+      <Button href="/suites" variant="ghost">See the suites</Button>
+    </div>
+  </SplitSection>
+
+  <!-- BY THE NUMBERS -->
+  <StatBand
+    eyebrow="The Estate in Numbers"
+    title="Three Thousand Years, Forty Acres"
+    stats={estateStats}
+    theme="dark"
+  />
+
+  <!-- THE HILLTOP -->
+  <SplitSection
+    eyebrow="The Hilltop"
+    title="Rest, at Altitude"
+    image={photos.cypressRoad}
+    imageAlt="A winding cypress-lined road climbing the Tuscan hills"
+    arch
+    reverse
+  >
+    <p>
+      The wellness of this place begins with the setting and is finished with
+      care. A pool rests in the quiet of the hilltop gardens. A handcrafted
+      barrel sauna faces the olive groves — heat and silence and landscape
+      working together. An outdoor gym waits under the open sky, for those who
+      prefer their stillness earned.
+    </p>
+    <p>
+      The terraces do what terraces here have always done. They hold the view:
+      the valley, the sea, the islands, and each evening a sunset that sinks
+      behind Corsica and hands the sky to the stars. There is no light up here
+      to argue with them. The Tuscan night arrives whole.
+    </p>
+  </SplitSection>
+
+  <!-- CINEMATIC QUOTE BAND -->
+  <QuoteBand
+    image={photos.valdorciaGolden}
+    imageAlt="Golden Maremma hills rolling toward the sea"
+    quote="The view is the entertainment, as it has been for three thousand years."
+    cite="Villa Dolce Vita"
+  />
+
+  <!-- OUR PHILOSOPHY -->
+  <SplitSection
+    eyebrow="Our Philosophy"
+    title="Continuity Over Novelty"
+    image={photos.butteriRider}
+    imageAlt="A buttero riding the Maremma plains, a tradition kept in use"
+  >
+    <p>
+      Nothing here chases a trend. The paths follow the contours they always
+      have. Dinner runs long because dinner here has always run long. The view
+      is the entertainment, as it has been for three thousand years.
+    </p>
+    <p>
+      The estate was never conceived as a resort. It is a home that opens its
+      doors — more personal than a hotel, more considered than a villa for rent,
+      and truer than either. Its work is not to invent an experience of Tuscany
+      but to keep a real one intact, and to hold the gate open.
+    </p>
+  </SplitSection>
+
+  <!-- MISSION & VALUES -->
+  <section class="section bg-ivory creed-section">
+    <div class="wrap">
+      <SectionHeader
+        eyebrow="Our Mission"
+        title="To Keep This Corner of the Maremma as It Is"
+        align="center"
+      >
+        <p>
+          Its land, its light, its pace, and its evenings under the Tuscan
+          stars — and to share it with guests who came for the real thing.
+        </p>
+      </SectionHeader>
+
+      <ul class="values">
+        {
+          values.map((v, i) => (
+            <Reveal as="li" class="values__item" delay={i * 0.06}>
+              <span class="values__num">{String(i + 1).padStart(2, "0")}</span>
+              <h3 class="values__title">{v.title}</h3>
+              <p class="values__body">{v.body}</p>
+            </Reveal>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- INVITATION -->
+  <section class="section bg-charcoal invite">
+    <div class="wrap wrap--narrow" style="text-align:center">
+      <SectionHeader
+        eyebrow="The Invitation"
+        title="Three Thousand Years of View"
+        align="center"
+        onDark
+      >
+        <p style="color:var(--text-on-dark-muted)">
+          The Etruscans chose these hills. So did the butteri. The door is open.
+        </p>
+      </SectionHeader>
+      <Reveal delay={0.15}>
+        <Button href={bookingHref} variant="secondary" onDark>Check Availability</Button>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Scale the arched section images down ~20% and centre them in their column. */
+  :global(.split .arch) {
+    display: flex;
+    justify-content: center;
+  }
+  :global(.split .arch__frame) {
+    width: 80%;
+  }
+
+  /* Mission + values. */
+  .creed-section :global(.sechead p) {
+    color: var(--text-muted);
+  }
+  .values {
+    list-style: none;
+    margin: var(--space-group) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  /* NOTE: .values__item is rendered by <Reveal as="li">, so it does NOT carry
+     this page's scope hash — target it (and its children) with :global(). */
+  .values :global(.values__item) {
+    background: var(--c-ivory);
+    padding: clamp(1.8rem, 3vw, 2.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .values :global(.values__num) {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-deep);
+  }
+  .values :global(.values__title) {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.7rem);
+    line-height: 1.1;
+    color: var(--c-forest);
+  }
+  .values :global(.values__body) {
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-size: 0.98rem;
+  }
+</style>

@@ -37,21 +37,13 @@ const anchors = [
   <PageHero
     eyebrow="Experiences"
     title="Everything Here Is Optional"
+    subtitle="Everything below is optional. Nobody at Villa Dolce Vita is going to hand you an itinerary. But if you want more than a pool and a view, here's what's within reach: vineyards you can walk to, horses that know the trails better than any guide, a coastline you can charter a boat into, and a sanctuary full of animals who were not always this lucky."
     image={photos.butteriRider}
     imageAlt="A butteri rider through the olive groves of Maremma"
   />
 
-  <!-- INTRO + ANCHOR NAV -->
+  <!-- ANCHOR NAV -->
   <section class="section bg-ivory exp-intro">
-    <div class="wrap wrap--narrow">
-      <Reveal as="p" class="lead">
-        Everything below is optional. Nobody at Villa Dolce Vita is going to hand you an
-        itinerary. But if you want more than a pool and a view, here's what's within reach:
-        vineyards you can walk to, horses that know the trails better than any guide, a
-        coastline you can charter a boat into, and a sanctuary full of animals who were not
-        always this lucky.
-      </Reveal>
-    </div>
     <nav class="anchor-nav wrap" aria-label="Jump to section">
       {anchors.map((a) => <a href={`#${a.id}`}>{a.label}</a>)}
     </nav>

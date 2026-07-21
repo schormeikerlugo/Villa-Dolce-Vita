@@ -37,11 +37,29 @@ const { eyebrow, video, booking = false } = Astro.props;
 
   {
     booking && (
-      <form class="hero__booking" action={bookingHref} method="get" aria-label="Check availability">
+      <form
+        class="hero__booking"
+        action={bookingHref}
+        method="get"
+        aria-label="Check availability"
+      >
         <div class="bookbar__field">
           <label for="hero-dates">Choose a travel date</label>
-          <input type="text" id="hero-dates" name="dates" value="May 12 — May 19, 2024" readonly />
-          <svg class="bookbar__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
+          <input
+            type="text"
+            id="hero-dates"
+            name="dates"
+            value="May 12 — May 19, 2024"
+            readonly
+          />
+          <svg
+            class="bookbar__icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
             <rect x="3" y="4.5" width="18" height="16" rx="2" />
             <path d="M3 9h18M8 2.5v4M16 2.5v4" />
           </svg>
@@ -54,7 +72,14 @@ const { eyebrow, video, booking = false } = Astro.props;
             <option>3 Adults</option>
             <option>4 Adults</option>
           </select>
-          <svg class="bookbar__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg
+            class="bookbar__icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
             <circle cx="9" cy="8" r="3.2" />
             <circle cx="16.5" cy="9" r="2.6" />
             <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2.2 1.5-4 3.5-4s2 1 2 1" />
@@ -68,19 +93,43 @@ const { eyebrow, video, booking = false } = Astro.props;
             <option>2 Children</option>
             <option>3 Children</option>
           </select>
-          <svg class="bookbar__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg
+            class="bookbar__icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
             <circle cx="9" cy="8" r="3.2" />
             <circle cx="16.5" cy="9" r="2.6" />
             <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2.2 1.5-4 3.5-4s2 1 2 1" />
           </svg>
         </div>
-        <button type="submit" class="bookbar__submit">Check Availability</button>
+        <button type="submit" class="bookbar__submit">
+          Check Availability
+        </button>
       </form>
     )
   }
-
 </section>
 <span id="after-hero"></span>
+
+<script>
+  // Trigger the nav's entrance choreography on pages that have a Hero (home).
+  // Re-arms on every View-Transition navigation into a hero page.
+  function armNavIntro() {
+    const nav = document.getElementById("site-nav");
+    const hero = document.querySelector(".hero");
+    if (!nav || !hero) return;
+    // Restart the CSS animation cleanly.
+    nav.classList.remove("nav--intro");
+    // Force reflow so re-adding the class replays the keyframes.
+    void (nav as HTMLElement).offsetWidth;
+    nav.classList.add("nav--intro");
+  }
+  document.addEventListener("astro:page-load", armNavIntro);
+</script>
 
 <style>
   .hero {
@@ -97,7 +146,7 @@ const { eyebrow, video, booking = false } = Astro.props;
     z-index: 2;
     max-width: 1100px;
     margin-inline: auto;
-    padding-top: 6rem;
+    padding-top: 25rem;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -109,6 +158,7 @@ const { eyebrow, video, booking = false } = Astro.props;
     text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 1.4rem;
+    font-weight: 700;
   }
   .hero__title {
     font-size: clamp(3rem, 1.5rem + 8vw, 8rem);
@@ -122,11 +172,48 @@ const { eyebrow, video, booking = false } = Astro.props;
   }
   .hero__sub {
     margin-top: 1.6rem;
-    max-width: 34ch;
+    max-width: 46ch;
     font-size: 0.8rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--text-on-dark-muted);
+    font-weight: 700;
+  }
+
+  /* ── Entrance choreography ────────────────────────────────────────────
+     1) Title rises up from below first.
+     2) The surrounding content (eyebrow, subtitle, booking) follows a beat later.
+     Order/timing is driven by animation-delay. */
+  .hero__title {
+    opacity: 0;
+    transform: translateY(60px);
+    animation: hero-rise 1.1s var(--ease-out) 0.2s forwards;
+    /* Clip the descenders' overflow so the rise reads clean. */
+    will-change: transform, opacity;
+  }
+  .hero__eyebrow,
+  .hero__sub,
+  .hero__actions {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: hero-rise 0.9s var(--ease-out) forwards;
+  }
+  /* "un segundo antes" → the content settles ~1s after the title starts. */
+  .hero__eyebrow {
+    animation-delay: 1.1s;
+  }
+  .hero__sub {
+    animation-delay: 1.25s;
+  }
+  .hero__actions {
+    animation-delay: 1.4s;
+  }
+
+  @keyframes hero-rise {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   .hero__actions {
     margin-top: 2.2rem;
@@ -154,6 +241,32 @@ const { eyebrow, video, booking = false } = Astro.props;
     border-radius: 6px;
     box-shadow: 0 20px 60px -30px rgba(0, 0, 0, 0.7);
     overflow: hidden;
+    /* Enters together with the hero content, just after the subtitle. */
+    opacity: 0;
+    transform: translateX(-50%) translateY(30px);
+    animation: hero-booking-in 0.9s var(--ease-out) 1.55s forwards;
+  }
+  @keyframes hero-booking-in {
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  /* Respect reduced-motion: show everything immediately. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__title,
+    .hero__eyebrow,
+    .hero__sub,
+    .hero__actions,
+    .hero__booking {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .hero__booking {
+      transform: translateX(-50%);
+    }
   }
   .bookbar__field {
     position: relative;
@@ -243,9 +356,16 @@ const { eyebrow, video, booking = false } = Astro.props;
     }
     .hero__booking {
       position: static;
-      transform: none;
+      transform: translateY(30px);
       width: min(560px, calc(100% - 2 * var(--gutter)));
       margin: -1rem auto 3rem;
+      animation-name: hero-booking-in-static;
+    }
+  }
+  @keyframes hero-booking-in-static {
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
   @media (max-width: 560px) {

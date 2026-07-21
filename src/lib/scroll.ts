@@ -180,6 +180,256 @@ function initPinFades() {
 }
 
 /**
+ * initSuitesCarousel — the pinned horizontal suites carousel.
+ *
+ * Desktop (>=861px, motion allowed): the section pins and vertical scroll is
+ * translated into horizontal travel of the track. Each suite is centred in
+ * turn and becomes the large "protagonist" card. The guest must scroll through
+ * all suites before the page continues below.
+ *
+ * Mobile / reduced motion: no pin — the track falls back to native
+ * scroll-snap (handled by CSS + a light scroll listener here).
+ *
+ * Registered inside initScroll (after destroyScroll + Lenis boot) so it shares
+ * the global ScrollTrigger lifecycle and refresh, and coexists with Lenis.
+ */
+function initSuitesCarousel() {
+  const roots = gsap.utils.toArray<HTMLElement>("[data-suites-showcase]");
+  if (!roots.length) return;
+
+  const canPin = () =>
+    window.matchMedia("(min-width: 861px)").matches && !prefersReducedMotion();
+
+  roots.forEach((root) => {
+    const pin = root.querySelector<HTMLElement>("[data-suites-pin]");
+    const scroller = root.querySelector<HTMLElement>("[data-carousel]");
+    const track = root.querySelector<HTMLElement>("[data-carousel-track]");
+    if (!pin || !scroller || !track) return;
+
+    const cards = Array.from(track.querySelectorAll<HTMLElement>(".suitecard"));
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-carousel-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-carousel-next]");
+    if (!cards.length) return;
+
+    let current = -1;
+    let st: ScrollTrigger | null = null;
+    let quickX: ((v: number) => void) | null = null;
+    let nativeScrollHandler: (() => void) | null = null;
+
+    const setActive = (i: number) => {
+      const clamped = Math.max(0, Math.min(cards.length - 1, i));
+      if (clamped === current) return;
+      current = clamped;
+      cards.forEach((card, idx) =>
+        card.classList.toggle("is-active", idx === clamped),
+      );
+      if (prevBtn) prevBtn.disabled = clamped === 0;
+      if (nextBtn) nextBtn.disabled = clamped === cards.length - 1;
+    };
+
+    // Distance to translate the track so card i's centre sits at viewport centre.
+    const centreOffsetFor = (i: number) => {
+      const card = cards[i];
+      const cardCentre = card.offsetLeft + card.offsetWidth / 2;
+      return window.innerWidth / 2 - cardCentre;
+    };
+
+    // ---- PINNED MODE ----
+    const buildPinned = () => {
+      root.classList.add("is-pinned");
+      setActive(0);
+      // Apply the initial centred position immediately (no easing on build).
+      gsap.set(track, { x: centreOffsetFor(0) });
+      quickX = gsap.quickTo(track, "x", {
+        duration: 0.35,
+        ease: "power3.out",
+      }) as unknown as (v: number) => void;
+
+      const steps = Math.max(1, cards.length - 1);
+      const distance = steps * window.innerHeight * 0.9;
+
+      st = ScrollTrigger.create({
+        trigger: pin,
+        start: "top top",
+        end: `+=${distance}`,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onRefresh: () => {
+          const idx = current < 0 ? 0 : current;
+          gsap.set(track, { x: centreOffsetFor(idx) });
+        },
+        onUpdate: (self) => {
+          const exact = self.progress * steps;
+          setActive(Math.round(exact));
+          const lo = Math.floor(exact);
+          const hi = Math.min(steps, lo + 1);
+          const frac = exact - lo;
+          const x =
+            centreOffsetFor(lo) +
+            (centreOffsetFor(hi) - centreOffsetFor(lo)) * frac;
+          if (quickX) quickX(x);
+        },
+      });
+    };
+
+    const scrollToIndexPinned = (i: number) => {
+      if (!st) return;
+      const steps = Math.max(1, cards.length - 1);
+      const p = i / steps;
+      const target = st.start + (st.end - st.start) * p;
+      if (lenis) lenis.scrollTo(target, { duration: 1 });
+      else window.scrollTo({ top: target, behavior: "smooth" });
+    };
+
+    // ---- NATIVE FALLBACK MODE ----
+    const nearestCard = () => {
+      const mid = scroller.scrollLeft + scroller.clientWidth / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      cards.forEach((card, i) => {
+        const centre = card.offsetLeft + card.offsetWidth / 2;
+        const d = Math.abs(centre - mid);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      });
+      return best;
+    };
+    const scrollToCardNative = (i: number) => {
+      const card = cards[Math.max(0, Math.min(cards.length - 1, i))];
+      if (!card) return;
+      scroller.scrollTo({
+        left: card.offsetLeft + card.offsetWidth / 2 - scroller.clientWidth / 2,
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+      });
+    };
+    const buildNative = () => {
+      root.classList.remove("is-pinned");
+      gsap.set(track, { clearProps: "transform" });
+      setActive(0);
+      let ticking = false;
+      nativeScrollHandler = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          setActive(nearestCard());
+          ticking = false;
+        });
+      };
+      scroller.addEventListener("scroll", nativeScrollHandler, { passive: true });
+      requestAnimationFrame(() => scrollToCardNative(0));
+    };
+
+    // ---- Shared controls ----
+    const goTo = (i: number) => {
+      const clamped = Math.max(0, Math.min(cards.length - 1, i));
+      if (root.classList.contains("is-pinned")) scrollToIndexPinned(clamped);
+      else scrollToCardNative(clamped);
+    };
+
+    prevBtn?.addEventListener("click", () => goTo(current - 1));
+    nextBtn?.addEventListener("click", () => goTo(current + 1));
+
+    cards.forEach((card, i) => {
+      card.addEventListener("click", (e) => {
+        if (i !== current) {
+          e.preventDefault();
+          goTo(i);
+        }
+      });
+    });
+
+    scroller.setAttribute("tabindex", "0");
+    scroller.setAttribute("role", "region");
+    scroller.setAttribute("aria-label", "Suites carousel");
+    scroller.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goTo(current + 1);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goTo(current - 1);
+      }
+    });
+
+    // ---- Mode management ----
+    let mode: "pinned" | "native" | null = null;
+    const teardownLocal = () => {
+      st?.kill();
+      st = null;
+      quickX = null;
+      gsap.set(track, { clearProps: "transform" });
+      if (nativeScrollHandler) {
+        scroller.removeEventListener("scroll", nativeScrollHandler);
+        nativeScrollHandler = null;
+      }
+      current = -1;
+    };
+    const apply = () => {
+      const want: "pinned" | "native" = canPin() ? "pinned" : "native";
+      if (want === mode) return;
+      teardownLocal();
+      mode = want;
+      if (want === "pinned") buildPinned();
+      else buildNative();
+    };
+
+    apply();
+
+    let resizeTimer: number | undefined;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        apply();
+        ScrollTrigger.refresh();
+      }, 160);
+    });
+  });
+}
+
+/**
+ * [data-mouse-parallax] — gives an element a gentle, spring-eased drift that
+ * follows the pointer within its nearest section. The attribute's value is the
+ * maximum travel in pixels (default 12). Disabled on coarse pointers (touch)
+ * and when the user prefers reduced motion.
+ */
+function initMouseParallax() {
+  if (prefersReducedMotion()) return;
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+  const targets = gsap.utils.toArray<HTMLElement>("[data-mouse-parallax]");
+
+  targets.forEach((el) => {
+    const max = parseFloat(el.dataset.mouseParallax ?? "12");
+    // React to pointer movement over the surrounding section (a comfortable
+    // hit area), falling back to the element itself.
+    const zone = (el.closest("section") ?? el.parentElement ?? el) as HTMLElement;
+
+    const xTo = gsap.quickTo(el, "x", { duration: 0.9, ease: "power3.out" });
+    const yTo = gsap.quickTo(el, "y", { duration: 0.9, ease: "power3.out" });
+
+    const onMove = (e: PointerEvent) => {
+      const r = zone.getBoundingClientRect();
+      // -0.5..0.5 relative to the zone centre.
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      xTo(nx * max * 2);
+      yTo(ny * max * 2);
+    };
+    const reset = () => {
+      xTo(0);
+      yTo(0);
+    };
+
+    zone.addEventListener("pointermove", onMove);
+    zone.addEventListener("pointerleave", reset);
+  });
+}
+
+/**
  * When the user prefers reduced motion, background videos should not autoplay.
  * Pause them and rely on the poster image instead.
  */
@@ -239,8 +489,12 @@ export function initScroll() {
   // measure their trigger positions (otherwise reveals after a pinned section
   // can miscalculate and stay hidden).
   initPinFades();
+  // The suites carousel also pins — register it before reveals so downstream
+  // sections measure their trigger positions with the pin space accounted for.
+  initSuitesCarousel();
   initReveals();
   initParallax();
+  initMouseParallax();
   initSectionReveals();
   initAnchorLinks();
 

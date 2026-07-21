@@ -6,6 +6,12 @@ import react from "@astrojs/react";
 export default defineConfig({
   site: "https://villadolcevita.eu",
   integrations: [react()],
+  // Preserve old bookmarks/links after the slug changes
+  // (About Us → Our Story, Rooms → Suites).
+  redirects: {
+    "/about-us": "/our-story",
+    "/rooms": "/suites",
+  },
   image: {
     // Sharp handles the large 3-5K source photos -> responsive AVIF/WebP.
     service: { entrypoint: "astro/assets/services/sharp" },

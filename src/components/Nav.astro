@@ -3,9 +3,9 @@
  * Nav — fixed top navigation.
  * - Transparent over hero media; gains a solid backdrop once scrolled.
  * - `theme="light"` for pages without a dark hero.
- * - Full 10-item menu on desktop; slide-in panel on mobile.
+ * - Compact grouped menu on desktop (dropdowns); slide-in panel on mobile.
  */
-import { nav, bookingHref, site } from "../data/site";
+import { navGroups, bookingHref, site, type NavNode, type NavItem } from "../data/site";
 import Button from "./Button.astro";
 
 interface Props {
@@ -14,6 +14,17 @@ interface Props {
 }
 const { theme = "dark", ...rest } = Astro.props;
 const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+const norm = (href: string) => href.replace(/\/$/, "") || "/";
+const hasChildren = (n: NavNode): n is Extract<NavNode, { children: NavItem[] }> =>
+  "children" in n && Array.isArray((n as { children?: unknown }).children);
+
+/** A node is active if its own href matches, or any of its children match. */
+function isActive(node: NavNode): boolean {
+  if ("href" in node && node.href && norm(node.href) === current) return true;
+  if (hasChildren(node)) return node.children.some((c) => norm(c.href) === current);
+  return false;
+}
 ---
 
 <header class="nav" data-theme={theme} id="site-nav" {...rest}>
@@ -25,14 +36,59 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
     <nav class="nav__menu" aria-label="Primary">
       <ul>
         {
-          nav.map((item) => {
-            const href = item.href.replace(/\/$/, "") || "/";
-            const active = href === current;
+          navGroups.map((node) => {
+            const active = isActive(node);
+            if (!hasChildren(node)) {
+              return (
+                <li>
+                  <a href={node.href} class:list={["nav__link", { active }]}>
+                    {node.label}
+                  </a>
+                </li>
+              );
+            }
+            const groupHrefs = [node.href, ...node.children.map((c) => c.href)]
+              .filter(Boolean)
+              .map((h) => norm(h as string))
+              .join(" ");
             return (
-              <li>
-                <a href={item.href} class:list={["nav__link", { active }]}>
-                  {item.label}
-                </a>
+              <li class="nav__group">
+                {node.href ? (
+                  <a
+                    href={node.href}
+                    class:list={["nav__link", "nav__grouptrigger", { active }]}
+                    aria-haspopup="true"
+                    data-nav-group={groupHrefs}
+                  >
+                    {node.label}
+                    <span class="nav__caret" aria-hidden="true" />
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    class:list={["nav__link", "nav__grouptrigger", { active }]}
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    data-nav-group={groupHrefs}
+                  >
+                    {node.label}
+                    <span class="nav__caret" aria-hidden="true" />
+                  </button>
+                )}
+                <div class="nav__dropdown">
+                  <ul>
+                    {node.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          class:list={["nav__droplink", { active: norm(child.href) === current }]}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </li>
             );
           })
@@ -51,15 +107,36 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 
   <!-- Mobile panel -->
   <div class="nav__panel" id="nav-panel">
-    <ul>
+    <ul class="nav__panel-list">
       {
-        nav.map((item) => (
-          <li>
-            <a href={item.href} class="nav__panel-link">
-              {item.label}
-            </a>
-          </li>
-        ))
+        navGroups.map((node) =>
+          !hasChildren(node) ? (
+            <li>
+              <a href={node.href} class="nav__panel-link">
+                {node.label}
+              </a>
+            </li>
+          ) : (
+            <li class="nav__panel-group">
+              {node.href ? (
+                <a href={node.href} class="nav__panel-link nav__panel-grouphead">
+                  {node.label}
+                </a>
+              ) : (
+                <span class="nav__panel-link nav__panel-grouphead">{node.label}</span>
+              )}
+              <ul class="nav__panel-sub">
+                {node.children.map((child) => (
+                  <li>
+                    <a href={child.href} class="nav__panel-sublink">
+                      {child.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ),
+        )
       }
     </ul>
     <Button href={bookingHref} variant="primary" class="nav__panel-cta">
@@ -77,6 +154,27 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
     /* Space so the floating pill sits away from the very top edge. */
     padding: clamp(1rem, 2vw, 1.6rem) clamp(1rem, 3vw, 2.5rem) 0;
     transition: color var(--dur) var(--ease-out);
+  }
+
+  /* Intro entrance — applied on the home page only (via a class set in Hero).
+     The pill drops in from above after the hero content has settled. */
+  .nav.nav--intro .nav__inner {
+    opacity: 0;
+    transform: translateY(-24px);
+    animation: nav-drop-in 0.8s var(--ease-out) 2s forwards;
+  }
+  @keyframes nav-drop-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav.nav--intro .nav__inner {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
   }
   /* The bar itself is a floating, translucent rounded "pill". */
   .nav__inner {
@@ -127,6 +225,101 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
   .nav__link.active {
     opacity: 1;
     border-color: currentColor;
+  }
+
+  /* ---- Grouped dropdowns (desktop) ---- */
+  .nav__group {
+    position: relative;
+  }
+  .nav__grouptrigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+  .nav__caret {
+    width: 5px;
+    height: 5px;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg) translateY(-1px);
+    transition: transform var(--dur-fast) var(--ease-out);
+    opacity: 0.8;
+  }
+  /* Dropdown panel — hidden until hover / keyboard focus within the group. */
+  .nav__dropdown {
+    position: absolute;
+    top: calc(100% + 0.8rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    min-width: 13rem;
+    padding: 0.6rem;
+    background: rgba(47, 63, 53, 0.94);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border: 1px solid rgba(243, 238, 230, 0.16);
+    border-radius: 14px;
+    box-shadow: 0 18px 44px -20px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      visibility var(--dur-fast);
+    z-index: 1;
+  }
+  /* A small hover bridge so the pointer can cross the gap without closing. */
+  .nav__dropdown::before {
+    content: "";
+    position: absolute;
+    top: -0.8rem;
+    left: 0;
+    right: 0;
+    height: 0.8rem;
+  }
+  .nav__group:hover .nav__dropdown,
+  .nav__group:focus-within .nav__dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .nav__group:hover .nav__caret,
+  .nav__group:focus-within .nav__caret {
+    transform: rotate(-135deg) translateY(2px);
+  }
+  .nav__dropdown ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .nav__droplink {
+    display: block;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-ivory);
+    border-radius: 8px;
+    opacity: 0.85;
+    white-space: nowrap;
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-out);
+  }
+  .nav__droplink:hover,
+  .nav__droplink.active {
+    opacity: 1;
+    color: var(--accent);
+    background: rgba(243, 238, 230, 0.08);
   }
 
   /* Nav CTA — no outline, fully rounded (pill) hover. */
@@ -190,18 +383,48 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
   .nav__panel.is-open {
     display: flex;
   }
-  .nav__panel ul {
+  /* Grouped list — left-aligned like the reference sketch, not centered. */
+  .nav__panel-list {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    text-align: center;
+    gap: 1.4rem;
+    width: min(22rem, 100%);
+    text-align: left;
   }
   .nav__panel-link {
     font-family: var(--font-display);
-    font-size: 1.6rem;
+    font-size: 1.7rem;
+    line-height: 1.1;
+  }
+  /* Group heading + indented subitems with a vertical hairline (the sketch). */
+  .nav__panel-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .nav__panel-grouphead {
+    color: var(--c-ivory);
+  }
+  .nav__panel-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-left: 0.9rem;
+    padding-left: 1.1rem;
+    border-left: 1px solid var(--line-on-dark);
+  }
+  .nav__panel-sublink {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    color: var(--text-on-dark-muted);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .nav__panel-sublink:hover {
+    color: var(--accent);
   }
   .nav__panel-cta {
-    margin-top: 1rem;
+    margin-top: 1.4rem;
   }
 
   @media (max-width: 1080px) {
@@ -255,7 +478,21 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 
     // 2) Active link: highlight the entry matching the current path.
     const current = location.pathname.replace(/\/$/, "") || "/";
-    navEl.querySelectorAll<HTMLAnchorElement>(".nav__link").forEach((a) => {
+    // Simple links (and group triggers that carry their own href).
+    navEl.querySelectorAll<HTMLElement>(".nav__link").forEach((el) => {
+      const group = el.dataset.navGroup;
+      if (group !== undefined) {
+        // Group trigger: active if the current path is the group's own page
+        // OR any of its children's pages.
+        const hrefs = group.split(/\s+/).filter(Boolean);
+        el.classList.toggle("active", hrefs.includes(current));
+      } else if (el instanceof HTMLAnchorElement) {
+        const href = new URL(el.href).pathname.replace(/\/$/, "") || "/";
+        el.classList.toggle("active", href === current);
+      }
+    });
+    // Dropdown sublinks.
+    navEl.querySelectorAll<HTMLAnchorElement>(".nav__droplink").forEach((a) => {
       const href = new URL(a.href).pathname.replace(/\/$/, "") || "/";
       a.classList.toggle("active", href === current);
     });

@@ -31,6 +31,7 @@ export default function TestimonialCarousel({ items, interval = 6500 }: Props) {
   }, [index, paused, go, interval]);
 
   const active = items[index];
+  if (!active) return null;
 
   return (
     <div
