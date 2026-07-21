@@ -10,7 +10,7 @@ import Hero from "../components/Hero.astro";
 import FeatureBar from "../components/FeatureBar.astro";
 import SplitSection from "../components/SplitSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
-import SuitesShowcase from "../components/SuitesShowcase.astro";
+import SuiteCard from "../components/SuiteCard.astro";
 import Button from "../components/Button.astro";
 import Reveal from "../components/Reveal.astro";
 import BackgroundVideo from "../components/BackgroundVideo.astro";
@@ -98,12 +98,26 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
     </div>
   </section>
 
-  <!-- THE SUITES — horizontal carousel with a large, centred hero card. -->
-  <SuitesShowcase
-    suites={orderedSuites}
-    title="Five Rooms, One View"
-    subtitle="Sophisticated comfort and genuine charm, curated for real rest."
-  />
+  <!-- THE SUITES — metro mosaic: a signature hero tile + a 2×2 grid. -->
+  <section class="section bg-ivory">
+    <div class="wrap">
+      <div class="suites-head">
+        <SectionHeader eyebrow="The Suites" title="Five Suites, One View" align="center">
+          <p>Sophisticated comfort and genuine charm, curated for real rest.</p>
+        </SectionHeader>
+        <Button href="/suites" variant="ghost" class="suites-head__cta">Explore all suites</Button>
+      </div>
+      <div class="suites-metro">
+        {
+          orderedSuites.map((s, i) => (
+            <div class:list={["suites-metro__cell", `suites-metro__cell--${i}`]}>
+              <SuiteCard suite={s} featured={i === 0} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 
   <!-- BEYOND THE VILLA -->
   <section class="section bg-dark beyond">
@@ -248,6 +262,104 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
 </BaseLayout>
 
 <style>
+  /* Section header with a link that sits on the title's baseline, then the grid. */
+  .suites-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: var(--space-group);
+  }
+  .suites-head :global(.sechead) {
+    /* header owns the bottom margin now */
+    margin-bottom: 0;
+  }
+  .suites-head__cta {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  /* ---- Suites: metro mosaic ----
+     4 equal columns, 2 equal rows. The signature suite (cell 0) claims a 2×2
+     hero tile on the left; the four supporting suites fill a clean 2×2 grid
+     on the right — no gaps.
+
+       [ 0 0 1 2 ]
+       [ 0 0 3 4 ]                                                        */
+  .suites-metro {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, minmax(8.8rem, 1fr));
+    gap: clamp(1rem, 1.8vw, 1.6rem);
+  }
+  .suites-metro__cell {
+    display: flex;
+    min-width: 0;
+  }
+  .suites-metro__cell > :global(.suite) {
+    width: 100%;
+  }
+  /* Signature suite: big hero tile spanning the left half. */
+  .suites-metro__cell--0 {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+  }
+  .suites-metro__cell--1 { grid-column: 3; grid-row: 1; }
+  .suites-metro__cell--2 { grid-column: 4; grid-row: 1; }
+  .suites-metro__cell--3 { grid-column: 3; grid-row: 2; }
+  .suites-metro__cell--4 { grid-column: 4; grid-row: 2; }
+
+  /* Every card fills its tile; images grow to consume the tile height. */
+  .suites-metro__cell :global(.suite__media) {
+    aspect-ratio: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Tablet: 2 columns; hero spans the full width on top, then a 2×2 grid. */
+  @media (max-width: 1000px) {
+    .suites-metro {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+      grid-auto-rows: 1fr;
+    }
+    .suites-metro__cell--0 {
+      grid-column: 1 / 3;
+      grid-row: auto;
+    }
+    .suites-metro__cell--1,
+    .suites-metro__cell--2,
+    .suites-metro__cell--3,
+    .suites-metro__cell--4 {
+      grid-column: auto;
+      grid-row: auto;
+    }
+    .suites-metro__cell :global(.suite__media) {
+      aspect-ratio: 4 / 5;
+      flex: 0 0 auto;
+    }
+    .suites-metro__cell--0 :global(.suite__media) {
+      aspect-ratio: 16 / 10;
+    }
+  }
+  /* Phone: single column stack. */
+  @media (max-width: 560px) {
+    .suites-metro {
+      grid-template-columns: 1fr;
+    }
+    .suites-metro__cell--0 {
+      grid-column: 1;
+    }
+    .suites-metro__cell :global(.suite__media),
+    .suites-metro__cell--0 :global(.suite__media) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  @media (max-width: 900px) {
+    .suites-head__cta {
+      margin-bottom: 1.5rem;
+    }
+  }
+
   /* Tighten the first two sections under the hero.
      NOTE: .features is rendered by the FeatureBar component, so it doesn't
      carry this page's scope hash — the whole selector must be :global(). */
