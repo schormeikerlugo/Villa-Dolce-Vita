@@ -122,11 +122,18 @@ const ctaImage = galleryItems.find((i) => i.slug === "villa-aerial-dusk")!.image
             <Reveal delay={0.08}>
               <p class="suite-detail__tagline">{suite.tagline}</p>
             </Reveal>
-            <Reveal delay={0.1}><hr class="rule" /></Reveal>
-            <Reveal delay={0.12}>
+            <Reveal delay={0.1}>
+              <p class="suite-detail__from">
+                <span class="suite-detail__from-label">from</span>
+                <strong>€{suite.fromNight}</strong>
+                <span class="suite-detail__from-unit">/ night</span>
+              </p>
+            </Reveal>
+            <Reveal delay={0.12}><hr class="rule" /></Reveal>
+            <Reveal delay={0.14}>
               <p class="suite-detail__intro">{suite.intro}</p>
             </Reveal>
-            <Reveal delay={0.15}>
+            <Reveal delay={0.16}>
               <ul class="suite-detail__features">
                 {suite.features.map((f) => (
                   <li>{f}</li>
@@ -135,20 +142,13 @@ const ctaImage = galleryItems.find((i) => i.slug === "villa-aerial-dusk")!.image
             </Reveal>
             <Reveal delay={0.18}>
               <div class="suite-detail__foot">
-                <p class="suite-detail__from">
-                  <span class="suite-detail__from-label">from</span>
-                  <strong>€{suite.fromNight}</strong>
-                  <span class="suite-detail__from-unit">/ night</span>
-                </p>
-                <div class="suite-detail__actions">
-                  <Button href={bookingHref} variant="primary">
-                    Reserve This Suite
-                  </Button>
-                  <a class="suite-detail__gallery-link" href="/gallery">
-                    View more photos
-                    <span aria-hidden="true">→</span>
-                  </a>
-                </div>
+                <Button href={bookingHref} variant="primary">
+                  Reserve This Suite
+                </Button>
+                <a class="suite-detail__gallery-link" href="/gallery">
+                  View more photos
+                  <span aria-hidden="true">→</span>
+                </a>
               </div>
             </Reveal>
           </div>
@@ -434,37 +434,37 @@ const ctaImage = galleryItems.find((i) => i.slug === "villa-aerial-dusk")!.image
     border: 1px solid var(--accent-deep);
     transform: rotate(45deg);
   }
+  /* Price sits just below the tagline — large and prominent. */
+  .suite-detail__from {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .suite-detail__from-label {
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+  }
+  .suite-detail__from strong {
+    color: var(--text);
+    font-size: clamp(2.2rem, 1.6rem + 2vw, 3.2rem);
+    font-family: var(--font-display);
+    line-height: 1;
+  }
+  .suite-detail__from-unit {
+    font-size: 0.9rem;
+  }
+  /* Actions row — left-aligned on every suite (reverse rows too). */
   .suite-detail__foot {
     margin-top: 2.2rem;
     padding-top: 1.6rem;
     border-top: 1px solid var(--line);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem 2rem;
-    flex-wrap: wrap;
-  }
-  .suite-detail__from {
-    display: flex;
-    align-items: baseline;
-    gap: 0.45rem;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-  }
-  .suite-detail__from-label {
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-size: 0.72rem;
-  }
-  .suite-detail__from strong {
-    color: var(--text);
-    font-size: clamp(1.6rem, 1.2rem + 1vw, 2.1rem);
-    font-family: var(--font-display);
-    line-height: 1;
-  }
-  .suite-detail__actions {
-    display: flex;
-    align-items: center;
+    justify-content: flex-start;
     gap: 1.2rem 1.6rem;
     flex-wrap: wrap;
   }
