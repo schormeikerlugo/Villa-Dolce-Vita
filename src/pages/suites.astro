@@ -12,10 +12,17 @@ import Reveal from "../components/Reveal.astro";
 import { Image } from "astro:assets";
 import { suites, roomsIntro } from "../data/suites";
 import { photos, mockups } from "../data/media";
-import { bookingHref } from "../data/site";
+import { bookingHref, contact } from "../data/site";
+import { galleryItems } from "../data/gallery";
 
 // The premium (highest-rate) suite gets a "Signature" flag.
 const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slug;
+
+// Rate range for the closing CTA.
+const lowestRate = Math.min(...suites.map((s) => s.fromNight));
+
+// Evocative full-bleed background for the closing CTA.
+const ctaImage = galleryItems.find((i) => i.slug === "villa-aerial-dusk")!.image;
 ---
 
 <BaseLayout
@@ -33,6 +40,7 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
   <!-- SUITES -->
   {
     suites.map((suite, i) => (
+      <>
       <section
         id={suite.slug}
         class:list={["section", "suite-detail", i % 2 === 0 ? "bg-ivory" : "split--stone"]}
@@ -104,7 +112,10 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
           </div>
 
           <div class="suite-detail__copy">
-            <Reveal as="p" class="eyebrow">
+            <span class="suite-detail__num" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <Reveal as="p" class="eyebrow suite-detail__kicker">
               {suite.slug === premiumSlug ? "Signature Suite · Sleeps " + suite.sleeps : "Sleeps " + suite.sleeps}
             </Reveal>
             <Reveal as="h2" delay={0.05}>{suite.name}</Reveal>
@@ -125,43 +136,97 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
             <Reveal delay={0.18}>
               <div class="suite-detail__foot">
                 <p class="suite-detail__from">
-                  from <strong>€{suite.fromNight}</strong> / night
+                  <span class="suite-detail__from-label">from</span>
+                  <strong>€{suite.fromNight}</strong>
+                  <span class="suite-detail__from-unit">/ night</span>
                 </p>
-                <Button href={bookingHref} variant="primary">
-                  Check Availability
-                </Button>
+                <div class="suite-detail__actions">
+                  <Button href={bookingHref} variant="primary">
+                    Reserve This Suite
+                  </Button>
+                  <a class="suite-detail__gallery-link" href="/gallery">
+                    View more photos
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </div>
               </div>
             </Reveal>
           </div>
         </div>
       </section>
+
+      {/* Dynamic CTA band, placed between the 2nd (Roma) and 3rd (Capri) suite. */}
+      {i === 1 && (
+        <section class="suites-cta" aria-labelledby="suites-cta-title">
+          <div class="suites-cta__media" data-parallax-scope>
+            <Image
+              class="suites-cta__img"
+              src={ctaImage}
+              alt="Villa Dolce Vita lit warm at dusk, seen from above"
+              widths={[768, 1280, 1920, 2560]}
+              sizes="100vw"
+              loading="lazy"
+              data-parallax="0.12"
+            />
+            <div class="suites-cta__scrim" aria-hidden="true" />
+          </div>
+          <div class="wrap suites-cta__inner">
+            <Reveal as="p" class="eyebrow eyebrow--gold">
+              Ready When You Are
+            </Reveal>
+            <Reveal as="h2" id="suites-cta-title" delay={0.05}>
+              Find the Suite That's Yours
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p class="suites-cta__lead">
+                Five suites, one unforgettable view — from €{lowestRate} a
+                night. Tell us your dates and we'll match you with the room
+                that fits your stay, then handle every detail before you
+                arrive.
+              </p>
+            </Reveal>
+            <Reveal as="div" class="suites-cta__actions" delay={0.15}>
+              <Button href={bookingHref} variant="primary" onDark>
+                Check Availability
+              </Button>
+              <a class="suites-cta__wa" href={contact.whatsappHref}>
+                Or message us on WhatsApp
+                <span aria-hidden="true">→</span>
+              </a>
+            </Reveal>
+          </div>
+        </section>
+      )}
+      </>
     ))
   }
 
   <!-- IN EVERY SUITE (branding detail) -->
-  <section class="section bg-dark in-suite">
+  <section class="in-suite">
+    <div class="in-suite__media" data-parallax-scope>
+      <Image
+        class="in-suite__img"
+        src={mockups.welcomeLetter}
+        alt="Villa Dolce Vita welcome letter and room key laid out in a suite"
+        widths={[768, 1280, 1920, 2560]}
+        sizes="100vw"
+        loading="lazy"
+        data-parallax="0.1"
+      />
+      <div class="in-suite__scrim" aria-hidden="true"></div>
+    </div>
     <div class="wrap in-suite__inner">
-      <div class="in-suite__copy">
-        <Reveal as="p" class="eyebrow eyebrow--gold">In Every Suite</Reveal>
-        <Reveal as="h2" delay={0.05}>The Little Things, Handled</Reveal>
-        <Reveal delay={0.1}><hr class="rule" /></Reveal>
-        <Reveal delay={0.12}>
-          <p style="color:var(--text-on-dark-muted)">
-            A handwritten welcome note and your room key waiting on arrival. Honey, olives and
-            citrus from the farm. New bedding and adjustable pillows. A WhatsApp concierge on
-            hand throughout your stay — and an optional butler service for those who'd like to be
-            looked after completely.
-          </p>
-        </Reveal>
-      </div>
-      <Reveal as="div" class="in-suite__media hoist" delay={0.1}>
-        <Image
-          src={mockups.welcomeLetter}
-          alt="Villa Dolce Vita welcome letter and room key in a suite"
-          widths={[480, 768, 1100]}
-          sizes="(max-width: 900px) 92vw, 44vw"
-          loading="lazy"
-        />
+      <Reveal as="p" class="eyebrow eyebrow--gold">In Every Suite</Reveal>
+      <Reveal as="h2" delay={0.05}>The Little Things, Handled</Reveal>
+      <Reveal delay={0.1}><hr class="rule" /></Reveal>
+      <Reveal delay={0.12}>
+        <p class="in-suite__lead">
+          A handwritten welcome note and your room key waiting on arrival.
+          Honey, olives and citrus from the farm. New bedding and adjustable
+          pillows. A WhatsApp concierge on hand throughout your stay — and an
+          optional butler service for those who'd like to be looked after
+          completely.
+        </p>
       </Reveal>
     </div>
   </section>
@@ -175,25 +240,52 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
     color: var(--c-forest);
   }
 
+  /* Constrain the editorial pair to the site's content column so the image
+     never sprawls edge-to-edge, and centre it on the page. */
   .suite-detail__inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: clamp(2.5rem, 6vw, 6.5rem);
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
     align-items: center;
   }
   .suite-detail__inner.is-reverse .suite-detail__media {
     order: 2;
   }
+  .suite-detail__media {
+    position: relative;
+  }
+  .suite-detail__copy {
+    position: relative;
+  }
+  /* Oversized index numeral — quiet editorial marker behind the kicker. */
+  .suite-detail__num {
+    position: absolute;
+    top: -0.55em;
+    right: 0;
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 9vw, 7rem);
+    line-height: 1;
+    color: var(--accent-deep);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .suite-detail__kicker {
+    position: relative;
+    z-index: 1;
+  }
   .suite-detail__img {
     position: relative;
     overflow: hidden;
     border-radius: var(--radius);
-    aspect-ratio: 5 / 6;
+    aspect-ratio: 4 / 3;
     box-shadow: var(--shadow-soft);
   }
-  @media (min-width: 1100px) {
+  @media (min-width: 901px) {
     .suite-detail__img {
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 5 / 6;
     }
   }
 
@@ -343,48 +435,210 @@ const premiumSlug = [...suites].sort((a, b) => b.fromNight - a.fromNight)[0].slu
     transform: rotate(45deg);
   }
   .suite-detail__foot {
-    margin-top: 2rem;
+    margin-top: 2.2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--line);
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
     flex-wrap: wrap;
   }
   .suite-detail__from {
-    font-size: 0.95rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
+  }
+  .suite-detail__from-label {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
   }
   .suite-detail__from strong {
     color: var(--text);
-    font-size: 1.2rem;
+    font-size: clamp(1.6rem, 1.2rem + 1vw, 2.1rem);
     font-family: var(--font-display);
+    line-height: 1;
+  }
+  .suite-detail__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem 1.6rem;
+    flex-wrap: wrap;
+  }
+  .suite-detail__gallery-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      gap var(--dur-fast) var(--ease-out);
+  }
+  .suite-detail__gallery-link span {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .suite-detail__gallery-link:hover {
+    border-color: currentColor;
+  }
+  .suite-detail__gallery-link:hover span {
+    transform: translateX(3px);
   }
 
-  .in-suite__inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 6vw, 5rem);
+  /* ---- Closing CTA (full-bleed) ---- */
+  .suites-cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    color: var(--c-ivory);
+    padding-block: clamp(5rem, 12vw, 9rem);
+    text-align: center;
+  }
+  .suites-cta__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .suites-cta__img {
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+    will-change: transform;
+  }
+  .suites-cta__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 70% at 50% 50%, rgba(18, 26, 22, 0.45), rgba(18, 26, 22, 0.72)),
+      linear-gradient(to bottom, rgba(18, 26, 22, 0.6), rgba(18, 26, 22, 0.55));
+  }
+  .suites-cta__inner {
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .suites-cta__inner .eyebrow {
+    justify-content: center;
+  }
+  .suites-cta__inner :global(.rule) {
+    margin-inline: auto;
+  }
+  .suites-cta__lead {
+    margin-top: 1.2rem;
+    max-width: 46ch;
+    margin-inline: auto;
+    color: rgba(243, 238, 230, 0.9);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem);
+    line-height: 1.65;
+    text-shadow: 0 1px 20px rgba(0, 0, 0, 0.3);
+  }
+  .suites-cta__actions {
+    margin-top: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem 1.8rem;
+    flex-wrap: wrap;
+  }
+  .suites-cta__wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      gap var(--dur-fast) var(--ease-out);
+  }
+  .suites-cta__wa span {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .suites-cta__wa:hover {
+    border-color: currentColor;
+  }
+  .suites-cta__wa:hover span {
+    transform: translateX(3px);
+  }
+
+  /* ---- In Every Suite (full-bleed background) ---- */
+  .in-suite {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    color: var(--c-ivory);
+    padding-block: clamp(4rem, 9vw, 6.5rem);
   }
   .in-suite__media {
-    overflow: hidden;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-soft);
-    aspect-ratio: 4 / 5;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
   }
-  .in-suite__media :global(img) {
+  .in-suite__img {
     width: 100%;
-    height: 100%;
+    height: 118%;
     object-fit: cover;
+    will-change: transform;
+  }
+  /* Darken from the left so the copy stays legible over the imagery. */
+  .in-suite__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        105deg,
+        rgba(18, 26, 22, 0.92) 0%,
+        rgba(18, 26, 22, 0.82) 34%,
+        rgba(18, 26, 22, 0.5) 62%,
+        rgba(18, 26, 22, 0.32) 100%
+      );
+  }
+  .in-suite__inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
+  }
+  .in-suite__inner > :global(*) {
+    max-width: 44rem;
+  }
+  .in-suite__lead {
+    color: rgba(243, 238, 230, 0.9);
+    line-height: 1.7;
   }
 
   @media (max-width: 900px) {
-    .suite-detail__inner,
-    .in-suite__inner {
+    .suite-detail__inner {
       grid-template-columns: 1fr;
       gap: 2.5rem;
     }
     .suite-detail__inner.is-reverse .suite-detail__media {
       order: 0;
+    }
+    .suite-detail__num {
+      font-size: clamp(3rem, 14vw, 4.5rem);
+      top: -0.45em;
+    }
+    .suite-detail__foot {
+      justify-content: flex-start;
+    }
+    /* Stronger, even scrim on narrow screens where copy sits over the art. */
+    .in-suite__scrim {
+      background: linear-gradient(
+        to bottom,
+        rgba(18, 26, 22, 0.72),
+        rgba(18, 26, 22, 0.88)
+      );
     }
   }
 </style>
