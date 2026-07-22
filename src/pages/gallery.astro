@@ -1,0 +1,422 @@
+---
+/**
+ * Gallery — the visual archive of the estate and its surroundings.
+ * A filterable masonry of photographs (villa, landscape, experiences,
+ * village life, around Tuscany, food & wine, celebrations) with a lightbox.
+ */
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Reveal from "../components/Reveal.astro";
+import { galleryItems, galleryCategories } from "../data/gallery";
+
+const heroImage = galleryItems.find((i) => i.slug === "villa-aerial-golden")!.image;
+const total = galleryItems.length;
+---
+
+<BaseLayout
+  title="Gallery"
+  description="A visual archive of Villa Dolce Vita — the hilltop estate, the Tuscan landscape around it, the experiences, the villages and the celebrations."
+>
+  <PageHero
+    eyebrow="Gallery"
+    title="The Estate, in Pictures"
+    subtitle="The villa on its hilltop, the hills and villages around it, and the days in between — a slow scroll through the world you'll be staying in."
+    image={heroImage}
+    imageAlt="Golden hour over Villa Dolce Vita and the surrounding woods"
+  />
+
+  <section class="section bg-ivory gal">
+    <div class="wrap">
+      <header class="gal__head">
+        <Reveal as="p" class="eyebrow eyebrow--diamond">Visual Archive</Reveal>
+        <Reveal as="h2" delay={0.05}>A Curated Collection</Reveal>
+        <Reveal delay={0.1}><hr class="rule" /></Reveal>
+        <Reveal as="p" class="gal__count" delay={0.12}>
+          — <span id="gal-count">{total}</span> photographs
+        </Reveal>
+      </header>
+
+      <!-- Filters -->
+      <div class="gal__filters" role="group" aria-label="Filter photographs by category">
+        <button class="gal__pill is-active" data-filter="all" aria-pressed="true">
+          All
+        </button>
+        {
+          galleryCategories.map((c) => (
+            <button class="gal__pill" data-filter={c.id} aria-pressed="false">
+              {c.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <!-- Masonry grid -->
+      <div class="gal__grid" id="gal-grid">
+        {
+          galleryItems.map((item, i) => (
+            <figure class="gal__item" data-cat={item.cat} data-index={i}>
+              <button
+                class="gal__open"
+                type="button"
+                aria-label={`View photograph: ${item.alt}`}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  widths={[480, 800, 1600]}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  loading="lazy"
+                />
+                <figcaption class="gal__caption">{item.alt}</figcaption>
+              </button>
+            </figure>
+          ))
+        }
+      </div>
+
+      <p class="gal__empty" id="gal-empty" hidden>No photographs in this category yet.</p>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <dialog class="glb" id="gal-lightbox" aria-label="Photograph viewer">
+    <button class="glb__close" type="button" aria-label="Close viewer">&times;</button>
+    <button class="glb__nav glb__nav--prev" type="button" aria-label="Previous photograph">
+      &#8592;
+    </button>
+    <figure class="glb__figure">
+      <img id="glb-img" src="" alt="" />
+      <figcaption class="glb__meta">
+        <span id="glb-caption"></span>
+        <span class="glb__counter" id="glb-counter"></span>
+      </figcaption>
+    </figure>
+    <button class="glb__nav glb__nav--next" type="button" aria-label="Next photograph">
+      &#8594;
+    </button>
+  </dialog>
+</BaseLayout>
+
+<style>
+  /* ---- Archive header ---- */
+  .gal__head {
+    text-align: center;
+    margin-bottom: clamp(1.6rem, 3vw, 2.4rem);
+  }
+  .gal__head .eyebrow {
+    justify-content: center;
+  }
+  .gal__head :global(.rule) {
+    margin-inline: auto;
+  }
+  .gal__count {
+    margin: 0.8rem auto 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted, #6b6b64);
+  }
+
+  /* ---- Filter pills ---- */
+  .gal__filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .gal__pill {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+  .gal__pill:hover {
+    border-color: var(--c-forest);
+  }
+  .gal__pill.is-active {
+    background: var(--c-forest);
+    border-color: var(--c-forest);
+    color: var(--c-ivory);
+  }
+
+  /* ---- Masonry grid (CSS columns) ---- */
+  .gal__grid {
+    columns: 3 300px;
+    column-gap: 1rem;
+  }
+  .gal__item {
+    break-inside: avoid;
+    margin: 0 0 1rem;
+  }
+  .gal__item[hidden] {
+    display: none;
+  }
+  .gal__open {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+  }
+  .gal__open :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .gal__open:hover :global(img),
+  .gal__open:focus-visible :global(img) {
+    transform: scale(1.04);
+  }
+  .gal__caption {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 2.2rem 1rem 0.85rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-align: left;
+    color: var(--c-ivory);
+    background: linear-gradient(to top, rgba(18, 26, 22, 0.72), rgba(18, 26, 22, 0));
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out);
+    pointer-events: none;
+  }
+  .gal__open:hover .gal__caption,
+  .gal__open:focus-visible .gal__caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .gal__empty {
+    text-align: center;
+    margin-inline: auto;
+    color: var(--text-muted, #6b6b64);
+  }
+
+  /* ---- Lightbox ---- */
+  .glb {
+    /* Reset dialog defaults; centre content on a deep green backdrop. */
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border: 0;
+    margin: 0;
+    padding: clamp(1rem, 3vw, 2.5rem);
+    background: transparent;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.6rem, 2vw, 1.5rem);
+  }
+  .glb[open] {
+    display: flex;
+  }
+  .glb::backdrop {
+    background: rgba(18, 26, 22, 0.93);
+  }
+  .glb__figure {
+    margin: 0;
+    max-width: min(1400px, 86vw);
+    text-align: center;
+  }
+  .glb__figure img {
+    max-width: 100%;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+  }
+  .glb__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.9rem;
+    color: rgba(243, 238, 230, 0.85);
+    font-size: 0.85rem;
+  }
+  .glb__counter {
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: rgba(243, 238, 230, 0.55);
+    white-space: nowrap;
+  }
+  .glb__close,
+  .glb__nav {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(243, 238, 230, 0.25);
+    background: rgba(243, 238, 230, 0.06);
+    color: var(--c-ivory);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+  .glb__close:hover,
+  .glb__nav:hover {
+    background: rgba(243, 238, 230, 0.16);
+    border-color: rgba(243, 238, 230, 0.5);
+  }
+  .glb__close {
+    position: fixed;
+    top: clamp(1rem, 3vw, 2rem);
+    right: clamp(1rem, 3vw, 2rem);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  @media (max-width: 640px) {
+    .glb {
+      padding: 0.75rem;
+    }
+    .glb__nav {
+      position: fixed;
+      bottom: 1.2rem;
+      z-index: 2;
+    }
+    .glb__nav--prev {
+      left: 1.2rem;
+    }
+    .glb__nav--next {
+      right: 1.2rem;
+    }
+    .glb__figure img {
+      max-height: 74vh;
+    }
+    .glb__meta {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gal__open :global(img),
+    .gal__caption {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function setupGallery() {
+    const grid = document.getElementById("gal-grid");
+    const lightbox = document.getElementById("gal-lightbox") as HTMLDialogElement | null;
+    if (!grid || !lightbox || grid.dataset.bound) return;
+    grid.dataset.bound = "true";
+
+    const items = Array.from(grid.querySelectorAll<HTMLElement>(".gal__item"));
+    const pills = Array.from(document.querySelectorAll<HTMLButtonElement>(".gal__pill"));
+    const countEl = document.getElementById("gal-count");
+    const emptyEl = document.getElementById("gal-empty");
+
+    /* ---- Filtering ---- */
+    function applyFilter(filter: string) {
+      let visible = 0;
+      for (const item of items) {
+        const show = filter === "all" || item.dataset.cat === filter;
+        item.hidden = !show;
+        if (show) visible++;
+      }
+      if (countEl) countEl.textContent = String(visible);
+      if (emptyEl) emptyEl.hidden = visible > 0;
+    }
+    for (const pill of pills) {
+      pill.addEventListener("click", () => {
+        for (const p of pills) {
+          const active = p === pill;
+          p.classList.toggle("is-active", active);
+          p.setAttribute("aria-pressed", String(active));
+        }
+        applyFilter(pill.dataset.filter || "all");
+      });
+    }
+
+    /* ---- Lightbox ---- */
+    const lbImg = document.getElementById("glb-img") as HTMLImageElement;
+    const lbCaption = document.getElementById("glb-caption")!;
+    const lbCounter = document.getElementById("glb-counter")!;
+    let current = -1;
+
+    /** Largest candidate from the thumbnail's srcset — reuse the 1600w asset. */
+    function largestSrc(img: HTMLImageElement): string {
+      const candidates = (img.srcset || "")
+        .split(",")
+        .map((s) => s.trim().split(/\s+/))
+        .filter((p) => p[0]);
+      if (!candidates.length) return img.currentSrc || img.src;
+      candidates.sort((a, b) => parseInt(b[1] || "0") - parseInt(a[1] || "0"));
+      return candidates[0][0];
+    }
+
+    function visibleItems() {
+      return items.filter((i) => !i.hidden);
+    }
+
+    function show(item: HTMLElement) {
+      const img = item.querySelector("img");
+      if (!img) return;
+      const vis = visibleItems();
+      current = vis.indexOf(item);
+      lbImg.src = largestSrc(img);
+      lbImg.alt = img.alt;
+      lbCaption.textContent = img.alt;
+      lbCounter.textContent = `${current + 1} / ${vis.length}`;
+      if (!lightbox.open) lightbox.showModal();
+    }
+
+    function step(dir: number) {
+      const vis = visibleItems();
+      if (!vis.length || current < 0) return;
+      show(vis[(current + dir + vis.length) % vis.length]);
+    }
+
+    for (const item of items) {
+      item.querySelector(".gal__open")?.addEventListener("click", () => show(item));
+    }
+    lightbox.querySelector(".glb__close")?.addEventListener("click", () => lightbox.close());
+    lightbox.querySelector(".glb__nav--prev")?.addEventListener("click", () => step(-1));
+    lightbox.querySelector(".glb__nav--next")?.addEventListener("click", () => step(1));
+    lightbox.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") step(-1);
+      if (e.key === "ArrowRight") step(1);
+    });
+    // Click on the backdrop (outside the figure) closes the viewer.
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) lightbox.close();
+    });
+    lightbox.addEventListener("close", () => {
+      lbImg.src = "";
+    });
+  }
+
+  document.addEventListener("astro:page-load", setupGallery);
+</script>

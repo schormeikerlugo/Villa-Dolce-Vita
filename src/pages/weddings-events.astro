@@ -3,26 +3,39 @@
  * Weddings & Events — hilltop ceremonies for 50–100 guests.
  * Copy lifted verbatim from content.md (Weddings & Events page).
  */
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import SplitSection from "../components/SplitSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import Button from "../components/Button.astro";
 import Reveal from "../components/Reveal.astro";
+import FeatureIcons from "../components/icons/FeatureIcons.astro";
 import { photos } from "../data/media";
 
-const receptionPoints = [
-  "Dinner with a view, available on request in a secluded area of the estate",
-  "White-glove wine service, including a selection from France dating to the 1960s–1990s",
-  "Long tables under market lights, spilling from the terrace into the vineyard rows",
-  "A menu built from our own kitchen — the parmigiano-wheel spaghetti makes a memorable showpiece course",
-];
+const receptionPoints = [];
 
 const planning = [
-  "Late spring through early autumn gives the best odds of a clear, warm evening for the sunset ceremony",
-  "Ceremony and reception capacity are confirmed separately, as they may differ",
-  "A rain contingency plan is agreed before booking",
-  "Parking and shuttle logistics for guests arriving from Pisa (≈1.5 h) or Florence (≈2 h) are arranged in advance",
+  {
+    icon: "leaf" as const,
+    title: "The Season",
+    text: "Late spring through early autumn gives the best odds of a clear, warm evening for the sunset ceremony.",
+  },
+  {
+    icon: "views" as const,
+    title: "The Guest Count",
+    text: "Ceremony and reception capacity are confirmed separately, as the two may differ.",
+  },
+  {
+    icon: "weather" as const,
+    title: "A Plan for Rain",
+    text: "A weather contingency is agreed before booking, so a change in the sky never changes the day.",
+  },
+  {
+    icon: "transfer" as const,
+    title: "Getting Here",
+    text: "Parking and shuttle logistics are arranged in advance for guests arriving from Pisa (≈1.5 h) or Florence (≈2 h).",
+  },
 ];
 ---
 
@@ -42,70 +55,184 @@ const planning = [
   <SplitSection
     eyebrow="The Setting"
     title="Where the Sky Does Most of the Work"
-    image={photos.terraceTableView}
-    imageAlt="The marble ceremony terrace overlooking vineyards and the sea"
+    image={photos.terraceTableTall}
+    imageAlt="A long table set on the terrace, the Tuscan valley opening out beyond"
     arch
   >
     <p>
-      Ceremonies take place on the hilltop terrace, looking out over vineyards, olive groves, and
-      the sea, with Isola d'Elba and, on the clearest days, Corsica, visible on the horizon.
+      Ceremonies take place on the hilltop terrace, looking out over vineyards,
+      olive groves, and the sea, with Isola d'Elba and, on the clearest days,
+      Corsica, visible on the horizon.
     </p>
     <p>
-      Timed right, the cocktail hour rolls straight into sunset, with the sky over the water
-      behind the islands doing most of the work for you.
+      Timed right, the cocktail hour rolls straight into sunset, with the sky
+      over the water behind the islands doing most of the work for you.
     </p>
   </SplitSection>
 
-  <!-- CEREMONY & RECEPTION -->
-  <section class="section bg-dark">
-    <div class="wrap wed-reception">
+  <!-- THE CEREMONY -->
+  <SplitSection
+    eyebrow="The Ceremony"
+    title="Vows as the Light Goes Gold"
+    image={photos.weddingCoupleSunset}
+    imageAlt="Bride and groom outdoors in the last golden light of the day"
+    reverse
+  >
+    <p>
+      Say your vows outdoors, in the open air, with the whole valley falling
+      away below and the light turning gold behind you. Fifty to a hundred
+      guests fit the terrace comfortably — close enough to feel the moment, far
+      enough to give it room.
+    </p>
+    <p>
+      Afterwards, the celebration moves at its own pace: a glass in hand, the
+      last of the sun on the sea, and no reason to rush anywhere.
+    </p>
+  </SplitSection>
+
+  <!-- THE RECEPTION -->
+  <section
+    class="wed-reception"
+    role="img"
+    aria-label="A couple's first dance, the gown catching the light against the dark"
+  >
+    <div class="wrap wed-reception__inner">
       <div class="wed-reception__copy">
-        <Reveal as="p" class="eyebrow eyebrow--gold">Ceremony & Reception</Reveal>
+        <Reveal as="p" class="eyebrow eyebrow--gold">The Reception</Reveal>
         <Reveal as="h2" delay={0.05}>From the Terrace, Into the Vines</Reveal>
         <Reveal delay={0.1}><hr class="rule" /></Reveal>
         <Reveal delay={0.12}>
-          <p style="color:var(--text-on-dark-muted)">
-            The reception can spill from the terrace into the vineyard rows: long tables under
-            market lights, a menu built from our own kitchen, and wine poured from our own list
-            right through dinner.
+          <p class="wed-reception__lead">
+            When the ceremony ends, the celebration simply moves off the marble
+            and down among the vines, where dinner is served under the open sky
+            and the evening finds its own unhurried pace.
           </p>
         </Reveal>
+        <Reveal as="ul" class="wed-list" delay={0.14}>
+          {receptionPoints.map((p) => <li>{p}</li>)}
+        </Reveal>
       </div>
-      <Reveal as="ul" class="wed-list" delay={0.14}>
-        {receptionPoints.map((p) => <li>{p}</li>)}
-      </Reveal>
+    </div>
+  </section>
+
+  <!-- MOMENTS GALLERY -->
+  <section class="section bg-ivory">
+    <div class="wrap">
+      <SectionHeader
+        eyebrow="The Day Itself"
+        title="The Moments You'll Remember"
+        align="center"
+      >
+        <p>
+          From the first look to the last dance — the quiet ones and the loud
+          ones both.
+        </p>
+      </SectionHeader>
+      <div class="wed-gallery">
+        <figure class="wtile wtile--tall" data-reveal data-reveal-delay={0.05}>
+          <Image
+            src={photos.weddingVeil}
+            alt="Bride and groom beneath a veil in the warm afternoon light"
+            widths={[420, 640, 900]}
+            sizes="(max-width: 860px) 92vw, 32vw"
+            loading="lazy"
+          />
+        </figure>
+        <figure class="wtile wtile--wide" data-reveal data-reveal-delay={0.12}>
+          <Image
+            src={photos.weddingSilhouette}
+            alt="The couple as a silhouette against a glow of light"
+            widths={[560, 900, 1300]}
+            sizes="(max-width: 860px) 92vw, 40vw"
+            loading="lazy"
+          />
+        </figure>
+        <figure class="wtile wtile--tall" data-reveal data-reveal-delay={0.19}>
+          <Image
+            src={photos.weddingEmbrace}
+            alt="An intimate close embrace in soft, warm light"
+            widths={[420, 640, 900]}
+            sizes="(max-width: 860px) 92vw, 32vw"
+            loading="lazy"
+          />
+        </figure>
+      </div>
     </div>
   </section>
 
   <!-- PLANNING DETAILS -->
-  <section class="section split--stone">
-    <div class="wrap">
-      <SectionHeader eyebrow="Planning Details" title="The Things Worth Settling Early" align="left" />
+  <section class="section split--stone planning-sec">
+    <div class="wrap planning-grid">
+      <aside class="planning-aside">
+        <header class="sechead sechead--left">
+          <Reveal as="p" class="eyebrow eyebrow--diamond">Planning Details</Reveal>
+          <Reveal as="h2" delay={0.05}>The Things Worth<br />Settling Early</Reveal>
+          <Reveal delay={0.1}><hr class="rule" /></Reveal>
+        </header>
+        <p class="planning-aside__note">
+          A few details, agreed early, keep the day itself effortless. We handle the rest.
+        </p>
+      </aside>
+
       <ol class="planning">
-        {planning.map((p, i) => (
-          <li data-reveal>
-            <span class="planning__num">{String(i + 1).padStart(2, "0")}</span>
-            <span>{p}</span>
-          </li>
-        ))}
+        {
+          planning.map((p, i) => (
+            <li class="pcard" data-reveal data-reveal-delay={0.05 * i}>
+              <span class="pcard__num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="pcard__icon">
+                <FeatureIcons name={p.icon} />
+              </span>
+              <h3 class="pcard__title">{p.title}</h3>
+              <p class="pcard__text">{p.text}</p>
+            </li>
+          ))
+        }
       </ol>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="section bg-ivory">
-    <div class="wrap wrap--narrow" style="text-align:center">
-      <SectionHeader eyebrow="Start the Conversation" title="Picture Your Own Setup" align="center">
-        <p>Tell us the date and the headcount — we'll build the rest around your day.</p>
-      </SectionHeader>
+  <section class="wed-cta">
+    <Image
+      class="wed-cta__bg"
+      src={photos.weddingBouquet}
+      alt="Bride holding an illuminated bouquet beside the groom"
+      widths={[900, 1400, 1920]}
+      sizes="100vw"
+      loading="lazy"
+    />
+    <div class="wed-cta__scrim"></div>
+    <div class="wed-cta__content wrap wrap--narrow">
+      <Reveal as="p" class="eyebrow eyebrow--gold"
+        >Start the Conversation</Reveal
+      >
+      <Reveal as="h2" delay={0.05}>Picture Your Own Setup</Reveal>
+      <Reveal delay={0.1}><hr class="rule" /></Reveal>
+      <Reveal delay={0.12}>
+        <p class="wed-cta__sub">
+          Tell us the date and the headcount — we'll build the rest around your
+          day.
+        </p>
+      </Reveal>
       <Reveal delay={0.15}>
-        <Button href="/contact" variant="primary">Enquire About Your Date</Button>
+        <Button href="/contact" variant="primary"
+          >Enquire About Your Date</Button
+        >
       </Reveal>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  /* Scale the arched section image down ~20% and centre it in its column. */
+  :global(.split .arch) {
+    display: flex;
+    justify-content: center;
+  }
+  :global(.split .arch__frame) {
+    width: 80%;
+  }
+
   .lead {
     font-family: var(--font-display);
     font-size: clamp(1.2rem, 0.9rem + 1.2vw, 1.8rem);
@@ -113,15 +240,37 @@ const planning = [
     color: var(--c-forest);
   }
   .wed-reception {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 6vw, 5rem);
-    align-items: center;
+    position: relative;
+    isolation: isolate;
+    color: var(--c-ivory);
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+    overflow: hidden;
+  }
+  /* Mirror-flipped background image, no darkening overlay. */
+  .wed-reception::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url("/images/weddings/wedding-dance.jpg");
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
+    transform: scaleX(-1);
+  }
+  .wed-reception__inner {
+    max-width: 46rem;
+  }
+  .wed-reception__copy :global(h2) {
+    color: var(--c-ivory);
+  }
+  .wed-reception__lead {
+    color: var(--text-on-dark-muted);
   }
   .wed-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 1.6rem 0 0;
     display: grid;
     gap: 1.1rem;
   }
@@ -142,30 +291,199 @@ const planning = [
     border: 1px solid var(--accent);
     transform: rotate(45deg);
   }
+  /* --- Planning details: aside + card grid --- */
+  .planning-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .planning-aside {
+    position: sticky;
+    top: clamp(4rem, 12vh, 8rem);
+  }
+  .planning-aside .sechead {
+    margin-bottom: 0;
+  }
+  .planning-aside .sechead h2 {
+    margin-top: 0.5rem;
+  }
+  .planning-aside__note {
+    color: var(--text-muted);
+    margin: 1.1rem 0 0;
+    max-width: 34ch;
+  }
+
   .planning {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem 3rem;
+    gap: clamp(1rem, 2vw, 1.6rem);
   }
-  .planning li {
-    display: flex;
-    gap: 1.2rem;
-    align-items: flex-start;
+  .pcard {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon num"
+      "title title"
+      "text text";
+    gap: 0.5rem 1rem;
+    padding: clamp(1.4rem, 2.4vw, 2rem);
+    background: var(--c-ivory);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition:
+      transform 0.4s ease,
+      box-shadow 0.4s ease,
+      border-color 0.4s ease;
   }
-  .planning__num {
+  .pcard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+    border-color: var(--accent);
+  }
+  .pcard__icon {
+    grid-area: icon;
+    width: 2.4rem;
+    height: 2.4rem;
+    color: var(--accent);
+  }
+  .pcard__num {
+    grid-area: num;
+    justify-self: end;
     font-family: var(--font-display);
-    font-size: 1.8rem;
-    color: var(--accent-deep);
+    font-size: 1.5rem;
     line-height: 1;
-    flex-shrink: 0;
+    color: var(--accent-deep);
+    opacity: 0.5;
+  }
+  .pcard__title {
+    grid-area: title;
+    margin: 0.6rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+  }
+  .pcard__text {
+    grid-area: text;
+    margin: 0.2rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  /* --- Moments gallery --- */
+  .wed-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 1fr;
+    gap: clamp(0.9rem, 2vw, 1.6rem);
+    align-items: center;
+  }
+  .wtile {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+  }
+  .wtile :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .wtile--tall {
+    aspect-ratio: 3 / 4;
+  }
+  .wtile--wide {
+    aspect-ratio: 4 / 5;
+  }
+  @media (min-width: 1100px) {
+    .wtile--wide {
+      aspect-ratio: 3 / 2;
+    }
+  }
+
+  /* --- Closing CTA over image --- */
+  .wed-cta {
+    position: relative;
+    isolation: isolate;
+    padding-block: clamp(5rem, 12vw, 9rem);
+    text-align: center;
+    color: var(--c-ivory);
+    overflow: hidden;
+  }
+  .wed-cta__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .wed-cta__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Same overlay previously used on The Reception. */
+    background: linear-gradient(
+      90deg,
+      rgba(18, 26, 22, 0.9) 0%,
+      rgba(18, 26, 22, 0.78) 40%,
+      rgba(18, 26, 22, 0.34) 70%,
+      rgba(18, 26, 22, 0.15) 100%
+    );
+  }
+  .wed-cta__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .wed-cta__content > :global(*) {
+    width: 100%;
+  }
+  .wed-cta__content :global(h2) {
+    color: var(--c-ivory);
+  }
+  .wed-cta__content :global(.rule) {
+    margin-inline: auto;
+  }
+  .wed-cta__sub {
+    color: var(--text-on-dark-muted);
+    margin: 0 auto 1.8rem;
+  }
+
+  @media (max-width: 960px) {
+    .planning-grid {
+      grid-template-columns: 1fr;
+    }
+    .planning-aside {
+      position: static;
+    }
+    .planning-aside__media {
+      aspect-ratio: 16 / 9;
+    }
   }
   @media (max-width: 900px) {
-    .wed-reception,
+    .wed-gallery {
+      grid-template-columns: 1fr 1fr;
+    }
+    .wtile--wide {
+      grid-column: 1 / -1;
+      aspect-ratio: 16 / 9;
+    }
+  }
+  @media (max-width: 560px) {
     .planning {
       grid-template-columns: 1fr;
+    }
+    .wed-gallery {
+      grid-template-columns: 1fr;
+    }
+    .wtile--wide {
+      aspect-ratio: 4 / 5;
     }
   }
 </style>

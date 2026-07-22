@@ -85,7 +85,10 @@ const { image, imageAlt = "", quote, cite } = Astro.props;
     gap: 1.5rem;
     padding-block: clamp(4rem, 9vw, 8rem);
   }
-  .quoteband__quote {
+  /* NOTE: .quoteband__quote / __cite are rendered by <Reveal>, which is a
+     separate component — they do NOT carry this file's scope hash. Target
+     them with :global() so the editorial styling actually applies. */
+  .quoteband :global(.quoteband__quote) {
     margin: 0;
     quotes: "\201C" "\201D";
     max-width: 22ch;
@@ -95,17 +98,17 @@ const { image, imageAlt = "", quote, cite } = Astro.props;
     line-height: 1.25;
     text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
   }
-  .quoteband__quote::before {
+  .quoteband :global(.quoteband__quote)::before {
     content: open-quote;
     color: var(--accent);
     margin-right: 0.05em;
   }
-  .quoteband__quote::after {
+  .quoteband :global(.quoteband__quote)::after {
     content: close-quote;
     color: var(--accent);
     margin-left: 0.05em;
   }
-  .quoteband__cite {
+  .quoteband :global(.quoteband__cite) {
     margin: 0;
     font-family: var(--font-body);
     font-size: var(--fs-eyebrow);

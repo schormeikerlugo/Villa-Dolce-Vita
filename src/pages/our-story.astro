@@ -67,7 +67,7 @@ const values = [
   <SplitSection
     eyebrow="The Land"
     title="Where Tuscany Keeps Its Wildness"
-    image={photos.hillTownValley}
+    image={photos.landMaremmaHilltown}
     imageAlt="A medieval hilltown rising over the wild Maremma valley"
     arch
     reverse
@@ -87,10 +87,11 @@ const values = [
   </SplitSection>
 
   <!-- THE HOUSE -->
+  <div class="house-split">
   <SplitSection
     eyebrow="The House"
     title="An Ancient Hill, Newly Kept"
-    image={photos.terraceTableView}
+    image={photos.houseTerraceView}
     imageAlt="A terrace table set against the estate's hillside view"
     theme="stone"
   >
@@ -109,6 +110,7 @@ const values = [
       <Button href="/suites" variant="ghost">See the suites</Button>
     </div>
   </SplitSection>
+  </div>
 
   <!-- BY THE NUMBERS -->
   <StatBand
@@ -122,8 +124,8 @@ const values = [
   <SplitSection
     eyebrow="The Hilltop"
     title="Rest, at Altitude"
-    image={photos.cypressRoad}
-    imageAlt="A winding cypress-lined road climbing the Tuscan hills"
+    image={photos.hilltopRest}
+    imageAlt="Rest at altitude — the estate's hilltop gardens and view"
     arch
     reverse
   >
@@ -144,8 +146,8 @@ const values = [
 
   <!-- CINEMATIC QUOTE BAND -->
   <QuoteBand
-    image={photos.valdorciaGolden}
-    imageAlt="Golden Maremma hills rolling toward the sea"
+    image={photos.monteriggioni}
+    imageAlt="The estate above the Maremma, the view unbroken for three thousand years"
     quote="The view is the entertainment, as it has been for three thousand years."
     cite="Villa Dolce Vita"
   />
@@ -175,7 +177,7 @@ const values = [
     <div class="wrap">
       <SectionHeader
         eyebrow="Our Mission"
-        title="To Keep This Corner of the Maremma as It Is"
+        title="To Keep This Corner of the Maremma as It Is"
         align="center"
       >
         <p>
@@ -228,7 +230,18 @@ const values = [
     width: 80%;
   }
 
-  /* Mission + values. */
+  /* "The House" uses a plain (non-arch) image — scale it down ~20% and centre
+     it in its column so it matches the arched sections' visual weight. */
+  .house-split :global(.split__media) {
+    display: flex;
+    justify-content: center;
+  }
+  .house-split :global(.split__img) {
+    width: 80%;
+  }
+
+  /* Mission header stays on the ivory section; only the values grid below is a
+     dark forest ground with the FeatureBar hover behaviour. */
   .creed-section :global(.sechead p) {
     color: var(--text-muted);
   }
@@ -238,34 +251,72 @@ const values = [
     padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: 1px;
-    background: var(--line);
-    border: 1px solid var(--line);
+    background: var(--bg-dark);
+    border: 1px solid var(--line-on-dark);
+    border-radius: var(--radius);
+    overflow: hidden;
   }
   /* NOTE: .values__item is rendered by <Reveal as="li">, so it does NOT carry
      this page's scope hash — target it (and its children) with :global(). */
   .values :global(.values__item) {
-    background: var(--c-ivory);
+    position: relative;
+    background: var(--bg-dark);
     padding: clamp(1.8rem, 3vw, 2.6rem);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    border-left: 1px solid var(--line-on-dark);
+    transition: background var(--dur-fast) var(--ease-out);
+  }
+  .values :global(.values__item:first-child) {
+    border-left: 0;
+  }
+  /* Accent line that grows up from the bottom on hover (matches FeatureBar). */
+  .values :global(.values__item)::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: translateX(-50%);
+    transition: width var(--dur-fast) var(--ease-out);
+  }
+  .values :global(.values__item:hover) {
+    background: rgba(243, 238, 230, 0.05);
+  }
+  .values :global(.values__item:hover)::after {
+    width: 100%;
   }
   .values :global(.values__num) {
     font-family: var(--font-display);
     font-size: 0.9rem;
     letter-spacing: 0.06em;
-    color: var(--accent-deep);
+    color: var(--accent);
   }
   .values :global(.values__title) {
     font-family: var(--font-display);
     font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.7rem);
     line-height: 1.1;
-    color: var(--c-forest);
+    color: var(--c-ivory);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .values :global(.values__item:hover) .values__title {
+    color: var(--accent);
   }
   .values :global(.values__body) {
-    color: var(--text-muted);
+    color: var(--text-on-dark-muted);
     line-height: 1.5;
     font-size: 0.98rem;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .values :global(.values__item:hover) .values__body {
+    color: var(--c-ivory);
+  }
+  @media (max-width: 900px) {
+    .values :global(.values__item:nth-child(odd)) {
+      border-left: 0;
+    }
   }
 </style>

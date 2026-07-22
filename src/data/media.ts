@@ -31,17 +31,31 @@ import butteriFoal from "../assets/images/AdobeStock_806802471.jpeg";
 import welcomeVilla from "../assets/images/seccion2.png"; // transparent PNG (no background)
 import massaMarittima from "../assets/images/seccion3.png"; // Massa Marittima cathedral + piazza (full-bleed band)
 
+/* ---- Our Story feature photos (full-resolution originals) ---- */
+import landMaremmaHilltown from "../assets/images/land-maremma-hilltown.jpg"; // The Land — Maremma hilltown over the valley
+import houseTerraceView from "../assets/images/house-terrace-view.png";       // The House — terrace + valley view
+import hilltopRest from "../assets/images/hilltop-rest.png";                   // The Hilltop — rest at altitude
+
 /* ---- Weddings & Events (src/assets/images/weddings) — home teaser gallery ---- */
 import weddingVeil from "../assets/images/weddings/wedding-veil.jpg";     // couple under veil, warm Mediterranean light (tall)
 import weddingDance from "../assets/images/weddings/wedding-dance.jpg";   // first dance, dramatic gown-lit (mid)
 import weddingBouquet from "../assets/images/weddings/wedding-bouquet.jpg"; // couple + lit bouquet (B&W caption tile)
+import weddingCoupleSunset from "../assets/images/weddings/wedding-couple-sunset.jpg"; // bride & groom outdoors at dusk, full-length (wide)
+import weddingSilhouette from "../assets/images/weddings/wedding-silhouette.jpg";       // couple silhouette against glowing light (dramatic, wide)
+import weddingEmbrace from "../assets/images/weddings/wedding-embrace.jpg";             // intimate close-up embrace, warm low light (tall)
 
 export const photos = {
   welcomeVilla,
   massaMarittima,
+  landMaremmaHilltown,
+  houseTerraceView,
+  hilltopRest,
   weddingVeil,
   weddingDance,
   weddingBouquet,
+  weddingCoupleSunset,
+  weddingSilhouette,
+  weddingEmbrace,
   restaurantStreet,
   florenceDuomoDusk,
   hillTownValley,
