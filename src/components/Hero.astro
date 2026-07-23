@@ -25,7 +25,7 @@ const { eyebrow, video, booking = false } = Astro.props;
     <h1 class="hero__title">
       <slot name="title" />
     </h1>
-    <p class="hero__sub"><slot name="subtitle" /></p>
+    {Astro.slots.has("subtitle") && <p class="hero__sub"><slot name="subtitle" /></p>}
     {
       Astro.slots.has("actions") && (
         <div class="hero__actions">
@@ -146,7 +146,7 @@ const { eyebrow, video, booking = false } = Astro.props;
     z-index: 2;
     max-width: 1100px;
     margin-inline: auto;
-    padding-top: 25rem;
+    padding-top: 27rem;
     text-align: center;
     display: flex;
     flex-direction: column;
