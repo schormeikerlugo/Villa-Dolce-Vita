@@ -65,48 +65,6 @@ const { eyebrow, video, booking = false } = Astro.props;
             <path d="M3 9h18M8 2.5v4M16 2.5v4" />
           </svg>
         </div>
-        <div class="bookbar__field">
-          <label for="hero-adults">Adults</label>
-          <select id="hero-adults" name="adults">
-            <option>1 Adult</option>
-            <option selected>2 Adults</option>
-            <option>3 Adults</option>
-            <option>4 Adults</option>
-          </select>
-          <svg
-            class="bookbar__icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-          >
-            <circle cx="9" cy="8" r="3.2" />
-            <circle cx="16.5" cy="9" r="2.6" />
-            <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2.2 1.5-4 3.5-4s2 1 2 1" />
-          </svg>
-        </div>
-        <div class="bookbar__field">
-          <label for="hero-kids">Teens and kids</label>
-          <select id="hero-kids" name="children">
-            <option selected>0 Children</option>
-            <option>1 Child</option>
-            <option>2 Children</option>
-            <option>3 Children</option>
-          </select>
-          <svg
-            class="bookbar__icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-          >
-            <circle cx="9" cy="8" r="3.2" />
-            <circle cx="16.5" cy="9" r="2.6" />
-            <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2.2 1.5-4 3.5-4s2 1 2 1" />
-          </svg>
-        </div>
         <button type="submit" class="bookbar__submit">
           Check Availability
         </button>
@@ -248,7 +206,7 @@ const { eyebrow, video, booking = false } = Astro.props;
     transform: translateX(-50%);
     width: min(1180px, calc(100% - 2 * var(--gutter)));
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr auto;
+    grid-template-columns: 1fr auto;
     align-items: stretch;
     gap: 0;
     background: rgba(27, 30, 31, 0.4);
@@ -350,13 +308,7 @@ const { eyebrow, video, booking = false } = Astro.props;
 
   @media (max-width: 980px) {
     .hero__booking {
-      grid-template-columns: 1fr 1fr;
-    }
-    .bookbar__field:nth-child(1) {
-      grid-column: 1 / -1;
-    }
-    .bookbar__submit {
-      grid-column: 1 / -1;
+      grid-template-columns: 1fr;
     }
   }
 
