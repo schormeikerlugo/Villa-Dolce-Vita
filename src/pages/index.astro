@@ -7,7 +7,6 @@
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
-import FeatureBar from "../components/FeatureBar.astro";
 import SplitSection from "../components/SplitSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import SuiteCard from "../components/SuiteCard.astro";
@@ -33,9 +32,6 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
   <Hero eyebrow="Massa Marittima, Tuscany" video="laDolceVita" booking>
     <Fragment slot="title">Under The<br /><em>Tuscan Sun</em></Fragment>
   </Hero>
-
-  <!-- FEATURE BAR — six-icon amenities strip, now its own band below the hero -->
-  <FeatureBar />
 
   <!-- WELCOME -->
   <SplitSection
