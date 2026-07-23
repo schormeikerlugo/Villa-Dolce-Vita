@@ -119,7 +119,7 @@ const { eyebrow, video, booking = false } = Astro.props;
   .hero__content {
     position: relative;
     z-index: 2;
-    max-width: 1100px;
+    max-width: 2200px;
     margin-inline: auto;
     padding-top: 27rem;
     text-align: center;
@@ -140,6 +140,7 @@ const { eyebrow, video, booking = false } = Astro.props;
     line-height: 0.98;
     font-weight: 500;
     text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
   }
   .hero__title :global(em) {
     font-style: italic;
@@ -322,6 +323,10 @@ const { eyebrow, video, booking = false } = Astro.props;
       display: flex;
       flex-direction: column;
       justify-content: center;
+    }
+    /* Allow the title to wrap again on narrow screens. */
+    .hero__title {
+      white-space: normal;
     }
     .hero__booking {
       position: static;
