@@ -106,28 +106,32 @@ const features = [featureA, featureB].filter(Boolean);
 </section>
 
 <style>
-  /* 60 / 40 split: feature tile on the left, mosaic on the right. */
+  /* 60 / 40 split: two stacked feature tiles on the left, a uniform mosaic on
+     the right. A shared row height keeps both columns perfectly even. */
   .hgal__split {
+    --hgal-gap: 1rem;
+    --hgal-row: 15.5rem; /* height of one mosaic row */
     display: grid;
     grid-template-columns: 60% 40%;
-    gap: 1rem;
+    gap: var(--hgal-gap);
     margin-top: var(--space-group);
   }
 
-  /* Left column: two full-width feature tiles stacked to match the mosaic's
-     height, so the column reads as a balanced pair instead of one tall image. */
+  /* Left column: two full-width feature tiles. Each spans two mosaic rows
+     (plus the gap between them) so the pair lines up with the 4-row mosaic. */
   .hgal__feature {
     display: grid;
     grid-template-rows: 1fr 1fr;
-    gap: 1rem;
+    gap: var(--hgal-gap);
     height: 100%;
   }
 
-  /* Right column mosaic: a compact two-column masonry-ish grid. */
+  /* Right column mosaic: fixed, uniform rows so every tile is the same size. */
   .hgal__mosaic {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-auto-rows: var(--hgal-row);
+    gap: var(--hgal-gap);
     align-content: start;
   }
 
@@ -192,6 +196,7 @@ const features = [featureA, featureB].filter(Boolean);
   /* Tablet: feature pair stacks above a 2-up mosaic. */
   @media (max-width: 860px) {
     .hgal__split {
+      --hgal-row: 12rem;
       grid-template-columns: 1fr;
     }
     .hgal__feature {
