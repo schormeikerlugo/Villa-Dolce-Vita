@@ -1,0 +1,190 @@
+---
+/**
+ * HomeGallery — a condensed 60/40 gallery teaser for the home page.
+ *
+ * Mirrors the look of the full /gallery page (rounded tiles, hover zoom,
+ * caption-on-hover, soft shadow) but adapted to a home section:
+ *   - Left column (≈60%): one oversized feature tile.
+ *   - Right column (≈40%): a compact 2-up mosaic of the remaining tiles.
+ *
+ * The curated set is ~60% suite photos + ~40% /gallery photos (see index.astro),
+ * and the section links out to the full /gallery archive.
+ */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import SectionHeader from "./SectionHeader.astro";
+import Button from "./Button.astro";
+
+export interface HomeGalleryItem {
+  image: ImageMetadata;
+  alt: string;
+  /** Short overlay caption shown on hover. */
+  caption?: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  /** First item is rendered as the large 60% feature tile. */
+  items: HomeGalleryItem[];
+  href?: string;
+  cta?: string;
+}
+
+const {
+  eyebrow = "Gallery",
+  title,
+  items,
+  href = "/gallery",
+  cta = "View full gallery",
+} = Astro.props;
+
+const [feature, ...rest] = items;
+---
+
+<section class="section bg-ivory hgal">
+  <div class="wrap">
+    <SectionHeader eyebrow={eyebrow} title={title} align="center" />
+
+    <div class="hgal__split">
+      {/* 60% — feature tile */}
+      {
+        feature && (
+          <figure
+            class="hgal__tile hgal__tile--feature"
+            data-reveal
+            data-reveal-delay={0.05}
+          >
+            <Image
+              src={feature.image}
+              alt={feature.alt}
+              widths={[640, 1000, 1600, 2000]}
+              sizes="(max-width: 860px) 92vw, 55vw"
+              loading="lazy"
+            />
+            {feature.caption && (
+              <figcaption class="hgal__caption">{feature.caption}</figcaption>
+            )}
+          </figure>
+        )
+      }
+
+      {/* 40% — mosaic of the remaining tiles */}
+      <div class="hgal__mosaic">
+        {
+          rest.map((item, i) => (
+            <figure
+              class="hgal__tile"
+              data-reveal
+              data-reveal-delay={0.08 + i * 0.05}
+            >
+              <Image
+                src={item.image}
+                alt={item.alt}
+                widths={[360, 560, 900]}
+                sizes="(max-width: 860px) 46vw, 22vw"
+                loading="lazy"
+              />
+              {item.caption && (
+                <figcaption class="hgal__caption">{item.caption}</figcaption>
+              )}
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="hgal__foot" data-reveal data-reveal-delay={0.1}>
+      <Button href={href} variant="ghost">{cta}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* 60 / 40 split: feature tile on the left, mosaic on the right. */
+  .hgal__split {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    gap: 1rem;
+    margin-top: var(--space-group);
+  }
+
+  /* Right column mosaic: a compact two-column masonry-ish grid. */
+  .hgal__mosaic {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  /* Shared tile look — lifted from the /gallery page tiles. */
+  .hgal__tile {
+    position: relative;
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+  }
+  .hgal__tile :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .hgal__tile:hover :global(img),
+  .hgal__tile:focus-within :global(img) {
+    transform: scale(1.04);
+  }
+
+  /* The feature tile fills the full height of the mosaic column. */
+  .hgal__tile--feature {
+    height: 100%;
+    min-height: 100%;
+  }
+  .hgal__tile--feature :global(img) {
+    min-height: 26rem;
+  }
+
+  .hgal__caption {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 2.2rem 1rem 0.85rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-align: left;
+    color: var(--c-ivory);
+    background: linear-gradient(
+      to top,
+      rgba(18, 26, 22, 0.72),
+      rgba(18, 26, 22, 0)
+    );
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out);
+    pointer-events: none;
+  }
+  .hgal__tile:hover .hgal__caption,
+  .hgal__tile:focus-within .hgal__caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hgal__foot {
+    margin-top: 2.4rem;
+    text-align: center;
+  }
+
+  /* Tablet: feature stacks above a 2-up mosaic. */
+  @media (max-width: 860px) {
+    .hgal__split {
+      grid-template-columns: 1fr;
+    }
+    .hgal__tile--feature :global(img) {
+      min-height: 18rem;
+    }
+  }
+</style>

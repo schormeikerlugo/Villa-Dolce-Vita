@@ -10,6 +10,7 @@ import Hero from "../components/Hero.astro";
 import SplitSection from "../components/SplitSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import SuiteCard from "../components/SuiteCard.astro";
+import HomeGallery from "../components/HomeGallery.astro";
 import Button from "../components/Button.astro";
 import Reveal from "../components/Reveal.astro";
 import BackgroundVideo from "../components/BackgroundVideo.astro";
@@ -18,13 +19,33 @@ import { Image } from "astro:assets";
 import { bookingHref } from "../data/site";
 import { suites } from "../data/suites";
 import { testimonials } from "../data/testimonials";
-import { photos } from "../data/media";
+import { photos, suitePhotos } from "../data/media";
+import { galleryItems } from "../data/gallery";
 import { experienceLinks } from "../data/experiences";
 import { journalTeasers } from "../data/journal";
 
 // Metro mosaic order: signature (highest rate) suite first so it takes the
 // hero tile, then the rest by descending rate for a balanced layout.
 const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
+
+// Home gallery teaser — a curated ~60% suites / ~40% /gallery mix that shows
+// the villa and its surroundings. First item is the large 60% feature tile.
+const gal = (slug: string) => galleryItems.find((g) => g.slug === slug)!;
+const homeGalleryItems = [
+  // Feature (60%) — the villa from above.
+  { image: gal("villa-aerial-golden").image, alt: "Villa Dolce Vita from above in the golden Tuscan light", caption: "The estate at golden hour" },
+  // Suites (≈60% of the set)
+  { image: suitePhotos.roma[0], alt: "Roma suite interior", caption: "Roma suite" },
+  { image: suitePhotos.napoli[0], alt: "Napoli suite interior", caption: "Napoli suite" },
+  { image: suitePhotos.positano[0], alt: "Positano suite interior", caption: "Positano suite" },
+  { image: suitePhotos.roma[2], alt: "Roma suite detail", caption: "Roma suite" },
+  { image: suitePhotos.napoli[2], alt: "Napoli suite detail", caption: "Napoli suite" },
+  { image: suitePhotos.milano[0], alt: "Milano suite interior", caption: "Milano suite" },
+  // Gallery (≈40% of the set) — surroundings.
+  { image: gal("pool-afternoon").image, alt: "The pool in the afternoon sun", caption: "The pool" },
+  { image: gal("terrace-table-view").image, alt: "Terrace table with a view over the hills", caption: "Terrace view" },
+  { image: gal("hills-pink-dawn").image, alt: "Tuscan hills at pink dawn", caption: "Hills at dawn" },
+];
 ---
 
 <BaseLayout>
@@ -113,6 +134,16 @@ const orderedSuites = [...suites].sort((a, b) => b.fromNight - a.fromNight);
       </div>
     </div>
   </section>
+
+  <!-- GALLERY — 60/40 teaser: the villa and its surroundings, curated from the
+       suites + the /gallery archive, linking out to the full gallery. -->
+  <HomeGallery
+    eyebrow="Gallery"
+    title="The Villa & Its Surroundings"
+    items={homeGalleryItems}
+    href="/gallery"
+    cta="View full gallery"
+  />
 
   <!-- BEYOND THE VILLA -->
   <section class="section bg-dark beyond">
