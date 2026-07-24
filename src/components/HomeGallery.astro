@@ -39,7 +39,10 @@ const {
   cta = "View full gallery",
 } = Astro.props;
 
-const [feature, ...rest] = items;
+// The first two items fill the tall left column, stacked full-width so it
+// doesn't read as one over-tall image; the rest form the right-hand mosaic.
+const [featureA, featureB, ...rest] = items;
+const features = [featureA, featureB].filter(Boolean);
 ---
 
 <section class="section bg-ivory hgal">
@@ -47,27 +50,29 @@ const [feature, ...rest] = items;
     <SectionHeader eyebrow={eyebrow} title={title} align="center" />
 
     <div class="hgal__split">
-      {/* 60% — feature tile */}
-      {
-        feature && (
-          <figure
-            class="hgal__tile hgal__tile--feature"
-            data-reveal
-            data-reveal-delay={0.05}
-          >
-            <Image
-              src={feature.image}
-              alt={feature.alt}
-              widths={[640, 1000, 1600, 2000]}
-              sizes="(max-width: 860px) 92vw, 55vw"
-              loading="lazy"
-            />
-            {feature.caption && (
-              <figcaption class="hgal__caption">{feature.caption}</figcaption>
-            )}
-          </figure>
-        )
-      }
+      {/* 60% — two full-width feature tiles stacked vertically */}
+      <div class="hgal__feature">
+        {
+          features.map((item, i) => (
+            <figure
+              class="hgal__tile hgal__tile--feature"
+              data-reveal
+              data-reveal-delay={0.05 + i * 0.05}
+            >
+              <Image
+                src={item.image}
+                alt={item.alt}
+                widths={[640, 1000, 1600, 2000]}
+                sizes="(max-width: 860px) 92vw, 55vw"
+                loading="lazy"
+              />
+              {item.caption && (
+                <figcaption class="hgal__caption">{item.caption}</figcaption>
+              )}
+            </figure>
+          ))
+        }
+      </div>
 
       {/* 40% — mosaic of the remaining tiles */}
       <div class="hgal__mosaic">
@@ -109,6 +114,15 @@ const [feature, ...rest] = items;
     margin-top: var(--space-group);
   }
 
+  /* Left column: two full-width feature tiles stacked to match the mosaic's
+     height, so the column reads as a balanced pair instead of one tall image. */
+  .hgal__feature {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+    height: 100%;
+  }
+
   /* Right column mosaic: a compact two-column masonry-ish grid. */
   .hgal__mosaic {
     display: grid;
@@ -138,13 +152,10 @@ const [feature, ...rest] = items;
     transform: scale(1.04);
   }
 
-  /* The feature tile fills the full height of the mosaic column. */
+  /* Each feature tile fills its half of the left column. */
   .hgal__tile--feature {
     height: 100%;
-    min-height: 100%;
-  }
-  .hgal__tile--feature :global(img) {
-    min-height: 26rem;
+    min-height: 0;
   }
 
   .hgal__caption {
@@ -178,13 +189,19 @@ const [feature, ...rest] = items;
     text-align: center;
   }
 
-  /* Tablet: feature stacks above a 2-up mosaic. */
+  /* Tablet: feature pair stacks above a 2-up mosaic. */
   @media (max-width: 860px) {
     .hgal__split {
       grid-template-columns: 1fr;
     }
+    .hgal__feature {
+      grid-template-rows: none;
+      height: auto;
+    }
     .hgal__tile--feature :global(img) {
-      min-height: 18rem;
+      height: auto;
+      min-height: 16rem;
+      max-height: 22rem;
     }
   }
 </style>
